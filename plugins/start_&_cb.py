@@ -182,8 +182,13 @@ async def bought(client, message):
 
 @Client.on_message(filters.private & filters.command("help"))
 async def help_command(client, message):
+    # Await get_me to get the bot's user object
+    bot = await client.get_me()
+    mention = bot.mention
+    
+    # Send the help message with inline buttons
     await message.reply_text(
-        text=Txt.HELP_TXT.format(mention=client.get_me().mention),
+        text=Txt.HELP_TXT.format(mention=mention),
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],

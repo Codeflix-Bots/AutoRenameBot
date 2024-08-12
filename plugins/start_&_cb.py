@@ -26,8 +26,10 @@ async def start(client, message):
 
 @Client.on_callback_query()
 async def cb_handler(client, query: CallbackQuery):
-    data = query.data 
-    user_id = query.from_user.id  
+    data = query.data
+    user_id = query.from_user.id
+    
+    print(f"Callback data received: {data}")  # Debugging line
     
     if data == "home":
         await query.message.edit_text(
@@ -43,15 +45,17 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('ᴘʀᴇᴍɪᴜᴍ •', callback_data='premiumx')
                 ]])
         )
+    # Add similar debug prints in other cases
     elif data == "caption":
         await query.message.edit_text(
             text=Txt.CAPTION_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"),
+                InlineKeyboardButton("• sᴜᴘᴘᴏʀᴛ", url='https://t.me/CodeflixSupport'),
                 InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")
-            ]])            
+            ]])
         )
+    # Continue with other elif cases
 
 @Client.on_message(filters.command("donate"))
 async def donation(client, message):

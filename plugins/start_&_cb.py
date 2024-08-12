@@ -179,3 +179,15 @@ async def bought(client, message):
             ])
         )
         await msg.edit_text('<b>Your screenshot has been sent to Admins</b>')
+
+@Client.on_message(filters.private & filters.command("help"))
+async def help_command(client, message):
+    await message.reply_text(
+        text="Hello {mention},\n\nHere are some options to help you:".format(mention=client.get_me().mention),
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],
+            [InlineKeyboardButton('• ᴛʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'), InlineKeyboardButton('ᴄᴀᴘᴛɪᴏɴ •', callback_data='caption')],
+            [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')]
+        ])
+    )

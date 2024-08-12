@@ -2,10 +2,10 @@ from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.errors import UserNotParticipant
 from config import Config
-from helper.database import madflixbotz
+from helper.database import codeflixbots
 
 async def not_subscribed(_, client, message):
-    await madflixbotz.add_user(client, message)
+    await codeflixbots.add_user(client, message)
     if not Config.FORCE_SUB:
         return False
     try:             
@@ -21,8 +21,11 @@ async def not_subscribed(_, client, message):
 
 @Client.on_message(filters.private & filters.create(not_subscribed))
 async def forces_sub(client, message):
-    buttons = [[InlineKeyboardButton(text="🔺 Update Channel 🔺", url=f"https://t.me/{Config.FORCE_SUB}") ]]
-    text = "<b>Hello Dear \n\nYou Need To Join In My Channel To Use Me\n\nKindly Please Join Channel</b>"
+    buttons = [
+        [InlineKeyboardButton(text="• ᴜᴘᴅᴀᴛᴇs •", url=f"https://t.me/{Config.FORCE_SUB}")],
+        [InlineKeyboardButton(text="• sᴜᴘᴘᴏʀᴛ •", url="https://t.me/CodeflixSupport")]
+    ]
+    text = "<b>ʙʀᴏ/sɪs\n\nʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ᴊᴏɪɴ ᴍʏ ᴜᴘᴅᴀᴛᴇs ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ɢʀᴏᴜᴘ ᴛᴏ ᴜsᴇ ᴍᴇ\n\nᴋɪɴᴅʟʏ ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴄʜᴀɴɴᴇʟ.</b>"
     try:
         user = await client.get_chat_member(Config.FORCE_SUB, message.from_user.id)    
         if user.status == enums.ChatMemberStatus.BANNED:                                   
@@ -30,11 +33,3 @@ async def forces_sub(client, message):
     except UserNotParticipant:                       
         return await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
     return await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
-          
-
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Developer @JishuDeveloper

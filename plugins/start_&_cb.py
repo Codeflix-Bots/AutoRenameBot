@@ -5,6 +5,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 
 from helper.database import codeflixbots
 from config import *
+from config import LOG_CHANNEL
 
 # Start Command Handler
 @Client.on_message(filters.private & filters.command("start"))
@@ -72,7 +73,7 @@ async def cb_handler(client, query: CallbackQuery):
             text=Txt.DONATE_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ᴏᴡɴᴇʀ •", url='https://t.me/sewxiy')]
+                [InlineKeyboardButton("• ʙᴀᴄᴋ", callback_data="help"), InlineKeyboardButton("ᴏᴡɴᴇʀ •", url='https://t.me/sewxiy')]
             ])
         )
     elif data == "file_names":
@@ -95,7 +96,7 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.edit_caption(
             caption=Txt.PREMIUM_TXT,
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ •", url='https://t.me/sewxiy')]
+                [InlineKeyboardButton("• ʙᴀᴄᴋ", callback_data="help"), InlineKeyboardButton("ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ •", url='https://t.me/sewxiy')]
             ])
         )
     elif data == "plans":

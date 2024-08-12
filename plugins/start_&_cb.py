@@ -77,7 +77,7 @@ async def cb_handler(client, query: CallbackQuery):
             ])
         )
     elif data == "file_names":
-        format_template = await madflixbotz.get_format_template(user_id)
+        format_template = await codeflixbots.get_format_template(user_id)
         await query.message.edit_text(
             text=Txt.FILE_NAME_TXT.format(format_template=format_template),
             disable_web_page_preview=True,
@@ -137,7 +137,7 @@ async def donation(client, message):
     await message.delete()
 
 # Premium Command Handler
-@Client.on_message(filters.command("premium"))
+@Client.on_message(filters.command("get_premium"))
 async def premium(bot, message):
     buttons = InlineKeyboardMarkup([
         [InlineKeyboardButton("ᴏᴡɴᴇʀ", url="https://t.me/sewxuy"), InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")]

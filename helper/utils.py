@@ -18,8 +18,8 @@ async def progress_for_pyrogram(current, total, ud_type, message, start):
         estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
         progress = "{0}{1}".format(
-            ''.join(["⬢" for i in range(math.floor(percentage / 5))]),
-            ''.join(["⬡" for i in range(20 - math.floor(percentage / 5))])
+            ''.join(["■" for i in range(math.floor(percentage / 5))]),
+            ''.join(["□" for i in range(20 - math.floor(percentage / 5))])
         )            
         tmp = progress + Txt.PROGRESS_BAR.format( 
             round(percentage, 2),
@@ -31,7 +31,7 @@ async def progress_for_pyrogram(current, total, ud_type, message, start):
         try:
             await message.edit(
                 text=f"{ud_type}\n\n{tmp}",               
-                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✖️ Cancel ✖️", callback_data="close")]])                                               
+                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("• ᴄᴀɴᴄᴇʟ •", callback_data="close")]])                                               
             )
         except:
             pass
@@ -79,11 +79,3 @@ async def send_log(b, u):
             Config.LOG_CHANNEL,
             f"<b><u>New User Started The Bot</u></b> \n\n<b>User ID</b> : `{u.id}` \n<b>First Name</b> : {u.first_name} \n<b>Last Name</b> : {u.last_name} \n<b>User Name</b> : @{u.username} \n<b>User Mention</b> : {u.mention} \n<b>User Link</b> : <a href='tg://openmessage?user_id={u.id}'>Click Here</a>\n\nDate: {date}\nTime: {time}\n\nBy: {b.mention}"
         )
-        
-
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Developer @JishuDeveloper

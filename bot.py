@@ -48,9 +48,3 @@ class Bot(Client):
 
 Bot().run()
 
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Developer @JishuDeveloper

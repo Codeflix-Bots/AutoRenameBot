@@ -58,7 +58,7 @@ async def donation(client, message):
         InlineKeyboardButton(text="ʙᴀᴄᴋ", callback_data="help"),
         InlineKeyboardButton(text="ᴏᴡɴᴇʀ", url=f'https://t.me/sewxiy'),
     ]]
-    yt=await message.reply_photo(photo='https://graph.org/file/1919fe077848bd0783d4c.jpg', caption=script.DONATE_TXT, reply_markup=InlineKeyboardMarkup(btn))
+    yt=await message.reply_photo(photo='https://graph.org/file/1919fe077848bd0783d4c.jpg', caption=Txt.DONATE_TXT, reply_markup=InlineKeyboardMarkup(btn))
     await asyncio.sleep(300)
     await yt.delete()
     await message.delete()
@@ -69,7 +69,7 @@ async def premium(bot, message):
          InlineKeyboardButton("ᴏᴡɴᴇʀ", url="https://t.me/sewxuy"),
          InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")
     ]]
-    yt=await message.reply_photo(photo='https://graph.org/file/8b50e21db819f296661b7.jpg', caption=script.PREMIUM_TXT, reply_markup=InlineKeyboardMarkup(btn))
+    yt=await message.reply_photo(photo='https://graph.org/file/8b50e21db819f296661b7.jpg', caption=Txt.PREMIUM_TXT, reply_markup=InlineKeyboardMarkup(btn))
     await asyncio.sleep(300)
     await yt.delete()
     await message.delete()
@@ -80,7 +80,7 @@ async def premium(bot, message):
          InlineKeyboardButton("sᴇɴᴅ ᴘᴀʏᴍᴇɴᴛ sᴄʀᴇᴀɴsʜᴏᴛ ʜᴇʀᴇ", url="https://t.me/sewxuy"),
          InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")
     ]]
-    yt=await message.reply_photo(photo='https://graph.org/file/8b50e21db819f296661b7.jpg', caption=script.PREPLANS_TXT, reply_markup=InlineKeyboardMarkup(btn))
+    yt=await message.reply_photo(photo='https://graph.org/file/8b50e21db819f296661b7.jpg', caption=Txt.PREPLANS_TXT, reply_markup=InlineKeyboardMarkup(btn))
     await asyncio.sleep(300)
     await yt.delete()
     await message.delete()

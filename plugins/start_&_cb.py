@@ -95,6 +95,15 @@ async def cb_handler(client, query: CallbackQuery):
             ]]),
         )
 
+    elif data == "premium":
+        await query.message.edit_caption(
+            caption=Txt.PREMIUM_TXT,
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"),
+                InlineKeyboardButton("ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ •", url='https://t.me/sewxiy'),
+            ]]),
+        )
+
 elif data == "about":
     await query.message.edit_text(
         text=Txt.ABOUT_TXT,

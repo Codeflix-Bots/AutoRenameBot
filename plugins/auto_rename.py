@@ -2,11 +2,12 @@ from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from helper.database import codeflixbots
 
+
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
     command_text = message.text.split("/autorename", 1)[1].strip() if len(message.text.split("/autorename", 1)) > 1 else ""
-    
+
     if command_text:
         # Save the format template to the database
         await codeflixbots.set_format_template(user_id, command_text)

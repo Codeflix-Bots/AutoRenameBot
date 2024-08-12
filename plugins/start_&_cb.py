@@ -183,7 +183,7 @@ async def bought(client, message):
 @Client.on_message(filters.private & filters.command("help"))
 async def help_command(client, message):
     await message.reply_text(
-        text="Hello {mention},\n\nHere are some options to help you:".format(mention=client.get_me().mention),
+        text=Txt.HELP_TXT.format(mention=client.get_me().mention),
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],

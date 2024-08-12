@@ -1,7 +1,7 @@
 ━━━━━━━━━━━━━━━━━━━━
 
 <h2 align="center">
-    ──「 ʟᴜᴄʏ ✘ ʀᴏʙᴏᴛ 」──
+    ──「 ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ 」──
 </h2>
 
 <p align="center">
@@ -97,7 +97,7 @@ status - Check bot status [FOR ADMINS USE ONLY].
 
 - <b>[sᴜʙᴀʀᴜ](https://github.com/sewxiy)  ➻  [sᴏᴍᴇᴛʜɪɴɢ](https://github.com/Codeflix-Bots/AutoFilter) </b>
  
-<b>ᴀɴᴅ ᴀʟʟ [ᴛʜᴇ ᴄᴏɴᴛʀɪʙᴜᴛᴏʀs](https://github.com/Codeflix-Bots/AutoFilter/graphs/contributors) ᴡʜᴏ ʜᴇʟᴩᴇᴅ ɪɴ ᴍᴀᴋɪɴɢ ʟᴜᴄʏ ʀᴏʙᴏᴛ ᴜsᴇғᴜʟ & ᴩᴏᴡᴇʀғᴜʟ 🖤 </b>
+<b>ᴀɴᴅ ᴀʟʟ [ᴛʜᴇ ᴄᴏɴᴛʀɪʙᴜᴛᴏʀs](https://github.com/Codeflix-Bots/autorenamebot/graphs/contributors) ᴡʜᴏ ʜᴇʟᴩᴇᴅ ɪɴ ᴍᴀᴋɪɴɢ ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ᴜsᴇғᴜʟ & ᴩᴏᴡᴇʀғᴜʟ 🖤 </b>
 
 ━━━━━━━━━━━━━━━━━━━━
 

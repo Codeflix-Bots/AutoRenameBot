@@ -1,4 +1,5 @@
 import re, os, time
+from os import environ, getenv
 id_pattern = re.compile(r'^.\d+$') 
 
 class Config(object):
@@ -10,6 +11,7 @@ class Config(object):
     # database config
     DB_NAME = os.environ.get("DB_NAME","codeflix")     
     DB_URL  = os.environ.get("DB_URL","mongodb+srv://publicdb:publicdb@cluster0.aisg0rh.mongodb.net/?retryWrites=true&w=majority")
+    PORT = os.environ.get("PORT", "8080")
  
     # other configs
     BOT_UPTIME  = time.time()

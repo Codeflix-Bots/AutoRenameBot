@@ -47,7 +47,8 @@ _**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ᴀᴜᴛᴏ ʀᴇ�
 <details><summary><b> - ᴅᴇᴘʟᴏʏᴍᴇɴᴛ ᴠᴀʀɪᴀʙʟᴇs :</summary>
   
 ## ᴅᴇᴘʟᴏʏᴍᴇɴᴛ ᴠᴀʀɪᴀʙʟᴇs
-```- [x] API_ID - get it from telegram app
+```
+- [x] API_ID - get it from telegram app
 - [x] API_HASH - get it from telegram app
 - [x] BOT_TOKEN - get it from telegram app
 - [x] ADMINS - for 2 or more '12345678 89674523' add space between ids

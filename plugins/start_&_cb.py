@@ -1,4 +1,5 @@
 import random
+import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, CallbackQuery, Message, InputMediaPhoto
 
@@ -16,7 +17,7 @@ async def start(client, message):
       InlineKeyboardButton('sᴜᴘᴘᴏʀᴛ •', url='https://t.me/CodeflixSupport')
     ],[
       InlineKeyboardButton('• ᴀʙᴏᴜᴛ', callback_data='about'),
-      InlineKeyboardButton('ᴘʀᴇᴍɪᴜᴍ •', callback_data='premium')
+      InlineKeyboardButton('ᴘʀᴇᴍɪᴜᴍ •', callback_data='premiumx')
     ]])
     if Config.START_PIC:
         await message.reply_photo(Config.START_PIC, caption=Txt.START_TXT.format(user.mention), reply_markup=button)       
@@ -39,7 +40,7 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('sᴜᴘᴘᴏʀᴛ •', url='https://t.me/CodeflixSupport')
                 ],[
                 InlineKeyboardButton('• ᴀʙᴏᴜᴛ', callback_data='about'),
-                InlineKeyboardButton('ᴘʀᴇᴍɪᴜᴍ •', callback_data='premium')
+                InlineKeyboardButton('ᴘʀᴇᴍɪᴜᴍ •', callback_data='premiumx')
                 ]])
         )
     elif data == "caption":
@@ -77,7 +78,7 @@ async def premium(bot, message):
 @Client.on_message(filters.command("plan"))
 async def premium(bot, message):
     btn = [[
-         InlineKeyboardButton("sᴇɴᴅ ᴘᴀʏᴍᴇɴᴛ sᴄʀᴇᴀɴsʜᴏᴛ ʜᴇʀᴇ", url="https://t.me/sewxuy"),
+         InlineKeyboardButton("sᴇɴᴅ ss", url="https://t.me/sewxiy"),
          InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")
     ]]
     yt=await message.reply_photo(photo='https://graph.org/file/8b50e21db819f296661b7.jpg', caption=Txt.PREPLANS_TXT, reply_markup=InlineKeyboardMarkup(btn))
@@ -154,7 +155,7 @@ async def bought(client, message):
             ]]),
         )
 
-    elif data == "premium":
+    elif data == "premiumx":
         await query.message.edit_caption(
             caption=Txt.PREMIUM_TXT,
             reply_markup=InlineKeyboardMarkup([[

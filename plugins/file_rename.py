@@ -222,8 +222,8 @@ async def auto_rename_files(client, message):
 
         upload_msg = await download_msg.edit("Trying To Uploading.....")
         ph_path = None
-        c_caption = await madflixbotz.get_caption(message.chat.id)
-        c_thumb = await madflixbotz.get_thumbnail(message.chat.id)
+        c_caption = await codeflixbots.get_caption(message.chat.id)
+        c_thumb = await codeflixbots.get_thumbnail(message.chat.id)
 
         caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}**"
 
@@ -287,9 +287,3 @@ async def auto_rename_files(client, message):
         del renaming_operations[file_id]
 
 
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Developer @JishuDeveloper

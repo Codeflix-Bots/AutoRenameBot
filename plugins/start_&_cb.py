@@ -141,11 +141,11 @@ async def donation(client, message):
 
 # Premium Command Handler
 @Client.on_message(filters.command("get_premium"))
-async def premium(bot, message):
+async def getpremium(bot, message):
     buttons = InlineKeyboardMarkup([
         [InlineKeyboardButton("ᴏᴡɴᴇʀ", url="https://t.me/sewxuy"), InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")]
     ])
-    yt = await message.reply_photo(photo='https://graph.org/file/8b50e21db819f296661b7.jpg', caption=Txt.PREMIUM_TXT, reply_markup=buttons)
+    yt = await message.reply_photo(photo='https://graph.org/file/feebef43bbdf76e796b1b.jpg', caption=Txt.PREMIUM_TXT, reply_markup=buttons)
     await asyncio.sleep(300)
     await yt.delete()
     await message.delete()

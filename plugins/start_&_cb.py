@@ -172,20 +172,20 @@ async def bought(client, message):
             ]]),
         )
 
-elif data == "about":
-    await query.message.edit_text(
-        text=Txt.ABOUT_TXT,
-        disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton("• sᴜᴘᴘᴏʀᴛ", url='https://t.me/CodeflixSupport'),
-            InlineKeyboardButton("ᴄᴏᴍᴍᴀɴᴅs •", callback_data="help")
-        ],[
-            InlineKeyboardButton("• ᴅᴇᴠᴇʟᴏᴘᴇʀ", url='https://t.me/cosmic_freak'),
-            InlineKeyboardButton("ɴᴇᴛᴡᴏʀᴋ •", url='https://t.me/otakuflix_network')
-        ],[
-            InlineKeyboardButton("• ʙᴀᴄᴋ •", callback_data="home")
-        ]])          
-    )
+    elif data == "about":
+        await query.message.edit_text(
+            text=Txt.ABOUT_TXT,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("• sᴜᴘᴘᴏʀᴛ", url='https://t.me/CodeflixSupport'),
+                InlineKeyboardButton("ᴄᴏᴍᴍᴀɴᴅs •", callback_data="help")
+            ],[
+                InlineKeyboardButton("• ᴅᴇᴠᴇʟᴏᴘᴇʀ", url='https://t.me/cosmic_freak'),
+                InlineKeyboardButton("ɴᴇᴛᴡᴏʀᴋ •", url='https://t.me/otakuflix_network')
+            ],[
+                InlineKeyboardButton("• ʙᴀᴄᴋ •", callback_data="home")
+            ]])          
+        )
     
     
     elif data == "close":

@@ -140,7 +140,7 @@ async def donation(client, message):
     await message.delete()
 
 # Premium Command Handler
-@Client.on_message(filters.command("get_premium"))
+@Client.on_message(filters.command("premium"))
 async def getpremium(bot, message):
     buttons = InlineKeyboardMarkup([
         [InlineKeyboardButton("ᴏᴡɴᴇʀ", url="https://t.me/sewxuy"), InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")]

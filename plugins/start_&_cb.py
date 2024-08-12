@@ -7,6 +7,9 @@ from helper.database import codeflixbots
 from config import *
 from config import Config
 
+# Define the LOG_CHANNEL variable
+LOG_CHANNEL = "-1001868871195"  # Replace with your actual log channel ID
+
 # Start Command Handler
 @Client.on_message(filters.private & filters.command("start"))
 async def start(client, message):

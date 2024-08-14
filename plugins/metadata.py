@@ -29,8 +29,9 @@ async def query_metadata(bot: Client, query: CallbackQuery):
     
     if data.startswith('metadata_'):
         _bool = data.split('_')[1]
+        bool_meta = bool(eval(_bool))
         
-        if bool(eval(_bool)):
+        if bool_meta:
             await db.set_metadata(query.from_user.id, bool_meta=False)
             await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
         else:
@@ -40,44 +41,42 @@ async def query_metadata(bot: Client, query: CallbackQuery):
     elif data == 'custom_metadata':
         await query.message.delete()
         try:
-            try:
-                metadata = await bot.ask(text=Txt.SEND_METADATA, chat_id=query.from_user.id, filters=filters.text, timeout=30, disable_web_page_preview=True)
-            except ListenerTimeout:
-                await query.message.reply_text("⚠️ Error!!\n\n**Request timed out.**\nRestart by using /metadata", reply_to_message_id=query.message.id)
-                return
-            print(metadata.text)
+            metadata = await bot.ask(text=Txt.SEND_METADATA, chat_id=query.from_user.id, filters=filters.text, timeout=30, disable_web_page_preview=True)
+            if not metadata:
+                raise ListenerTimeout()
             ms = await query.message.reply_text("**Please Wait...**", reply_to_message_id=metadata.id)
             await db.set_metadata_code(query.from_user.id, metadata_code=metadata.text)
             await ms.edit("**Your Metadata Code Set Successfully ✅**")
+        except ListenerTimeout:
+            await query.message.reply_text("⚠️ Error!!\n\n**Request timed out.**\nRestart by using /metadata", reply_to_message_id=query.message.id)
         except Exception as e:
             print(e)
 
-# Commands to set custom metadata
-@Client.on_message(filters.private & filters.command("settitle"))
-async def set_title(client, message):
-    await set_metadata(client, message, "title")
+@Client.on_message(filters.private & filters.command('settitle'))
+async def set_title(bot: Client, message: Message):
+    await set_metadata(bot, message, 'title')
 
-@Client.on_message(filters.private & filters.command("setauthor"))
-async def set_author(client, message):
-    await set_metadata(client, message, "author")
+@Client.on_message(filters.private & filters.command('setauthor'))
+async def set_author(bot: Client, message: Message):
+    await set_metadata(bot, message, 'author')
 
-@Client.on_message(filters.private & filters.command("setartist"))
-async def set_artist(client, message):
-    await set_metadata(client, message, "artist")
+@Client.on_message(filters.private & filters.command('setartist'))
+async def set_artist(bot: Client, message: Message):
+    await set_metadata(bot, message, 'artist')
 
-@Client.on_message(filters.private & filters.command("setaudio"))
-async def set_audio(client, message):
-    await set_metadata(client, message, "audio title")
+@Client.on_message(filters.private & filters.command('setaudio'))
+async def set_audio(bot: Client, message: Message):
+    await set_metadata(bot, message, 'audio')
 
-@Client.on_message(filters.private & filters.command("setsubtitle"))
-async def set_subtitle(client, message):
-    await set_metadata(client, message, "subtitle")
+@Client.on_message(filters.private & filters.command('setsubtitle'))
+async def set_subtitle(bot: Client, message: Message):
+    await set_metadata(bot, message, 'subtitle')
 
-@Client.on_message(filters.private & filters.command("setvideo"))
-async def set_video(client, message):
-    await set_metadata(client, message, "video title")
+@Client.on_message(filters.private & filters.command('setvideo'))
+async def set_video(bot: Client, message: Message):
+    await set_metadata(bot, message, 'video')
 
-async def set_metadata(client, message, metadata_type):
+async def set_metadata(bot: Client, message: Message, metadata_type: str):
     user_id = message.from_user.id
     bool_metadata = await db.get_metadata(user_id)
     
@@ -92,5 +91,5 @@ async def set_metadata(client, message, metadata_type):
         return
 
     metadata_value = command_parts[1].strip()
-    await db.set_metadata_code(user_id, metadata_type=metadata_value)
+    await getattr(db, f'set_{metadata_type}')(user_id, metadata_value)
     await message.reply_text(f"**{metadata_type.capitalize()} has been set to:** `{metadata_value}`")

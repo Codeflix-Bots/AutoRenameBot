@@ -79,9 +79,12 @@ async def handle_user_response(bot: Client, message: Message):
     pending_metadata_type = await db.get_metadata_code(user_id)
     
     if pending_metadata_type:
-        # User is responding to a metadata request
-        await getattr(db, f'set_{pending_metadata_type}')(user_id, message.text)
-        await message.reply_text(f"**Your Metadata Code `{pending_metadata_type}` Set Successfully ✅**")
+        # Ensure pending_metadata_type is clean
+        if pending_metadata_type in ['title', 'author', 'artist', 'audio', 'subtitle', 'video']:
+            await getattr(db, f'set_{pending_metadata_type}')(user_id, message.text)
+            await message.reply_text(f"**Your Metadata Code `{pending_metadata_type}` Set Successfully ✅**")
+        else:
+            await message.reply_text("⚠️ Invalid metadata type. Please try again.")
         await db.set_metadata_code(user_id, None)  # Clear pending metadata type
     else:
         # Handle other text messages or commands

@@ -130,5 +130,32 @@ Pʀɪᴄɪɴɢ:
 ➲ /Premium: ᴜᴘɢʀᴀᴅᴇ ꜰᴏʀ ᴜɴʟɪᴍɪᴛᴇᴅ ꜰᴇᴀᴛᴜʀᴇꜱ.
 ➲ /Help: ɢᴇᴛ ǫᴜɪᴄᴋ ᴀꜱꜱɪꜱᴛᴀɴᴄᴇ.</b>"""
 
+   SEND_METADATA = """
+ᴍᴀɴᴀɢɪɴɢ ᴍᴇᴛᴀᴅᴀᴛᴀ ғᴏʀ ʏᴏᴜʀ ᴠɪᴅᴇᴏs ᴀɴᴅ ғɪʟᴇs
 
+ᴠᴀʀɪᴏᴜꜱ ᴍᴇᴛᴀᴅᴀᴛᴀ:
+
+- ᴛɪᴛʟᴇ: Descriptive title of the media.
+- ᴀᴜᴛʜᴏʀ: The creator or owner of the media.
+- ᴀʀᴛɪꜱᴛ: The artist associated with the media.
+- ᴀᴜᴅɪᴏ: Title or description of audio content.
+- ꜱᴜʙᴛɪᴛʟᴇ: Title of subtitle content.
+- ᴠɪᴅᴇᴏ: Title or description of video content.
+
+ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴛᴜʀɴ ᴏɴ ᴏғғ ᴍᴇᴛᴀᴅᴀᴛᴀ:
+➜ /metadata: Turn on or off metadata.
+
+ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ꜱᴇᴛ ᴍᴇᴛᴀᴅᴀᴛᴀ:
+
+➜ /settitle: Set a custom title of media.
+➜ /setauthor: Set the author.
+➜ /setartist: Set the artist.
+➜ /setaudio: Set audio title.
+➜ /setsubtitle: Set subtitle title.
+➜ /setvideo: Set video title.
+
+ᴇxᴀᴍᴘʟᴇ: /settitle Your Title Here
+
+ᴜꜱᴇ ᴛʜᴇꜱᴇ ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴇɴʀɪᴄʜ ʏᴏᴜʀ ᴍᴇᴅɪᴀ ᴡɪᴛʜ ᴀᴅᴅɪᴛɪᴏɴᴀʟ ᴍᴇᴛᴀᴅᴀᴛᴀ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ!
+"""
 

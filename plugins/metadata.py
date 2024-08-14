@@ -4,21 +4,10 @@ from helper.database import codeflixbots as db
 from config import Txt
 
 # Inline buttons for metadata toggle
-ON = [[InlineKeyboardButton('Metadata On ✅', callback_data='metadata_1')],
-      [InlineKeyboardButton('Metadata Commands', callback_data='metadata_commands')]]
-OFF = [[InlineKeyboardButton('Metadata Off ❌', callback_data='metadata_0')],
-       [InlineKeyboardButton('Metadata Commands', callback_data='metadata_commands')]]
-
-# Buttons for metadata commands
-METADATA_COMMANDS_BUTTONS = [
-    [InlineKeyboardButton('Set Title', callback_data='set_title')],
-    [InlineKeyboardButton('Set Author', callback_data='set_author')],
-    [InlineKeyboardButton('Set Artist', callback_data='set_artist')],
-    [InlineKeyboardButton('Set Audio', callback_data='set_audio')],
-    [InlineKeyboardButton('Set Subtitle', callback_data='set_subtitle')],
-    [InlineKeyboardButton('Set Video', callback_data='set_video')],
-    [InlineKeyboardButton('Back to Metadata', callback_data='back_to_metadata')]
-]
+ON = [[InlineKeyboardButton('Metadata On ✅', callback_data='metadata_1')], 
+      [InlineKeyboardButton('Set Custom Metadata', callback_data='custom_metadata')]]
+OFF = [[InlineKeyboardButton('Metadata Off ❌', callback_data='metadata_0')], 
+       [InlineKeyboardButton('Set Custom Metadata', callback_data='custom_metadata')]]
 
 @Client.on_message(filters.private & filters.command('metadata'))
 async def handle_metadata(bot: Client, message: Message):
@@ -28,65 +17,41 @@ async def handle_metadata(bot: Client, message: Message):
     await ms.delete()
     
     if bool_metadata:
-        await message.reply_text(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
-    else:
-        await message.reply_text(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
+        return await message.reply_text(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
+    
+    return await message.reply_text(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
 
-@Client.on_callback_query(filters.regex('.*?(metadata|set_).*?'))
+@Client.on_callback_query(filters.regex('.*?(custom_metadata|metadata).*?'))
 async def query_metadata(bot: Client, query: CallbackQuery):
     data = query.data
     user_metadata = await db.get_metadata_code(query.from_user.id)
     
     if data.startswith('metadata_'):
-        meta_state = data.split('_')[1]  # Extract the state part
-        if meta_state == '1':
+        bool_meta = bool(eval(data.split('_')[1]))  # Evaluate the boolean value
+        
+        if bool_meta:
             await db.set_metadata(query.from_user.id, False)
             await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
-        elif meta_state == '0':
+        else:
             await db.set_metadata(query.from_user.id, True)
             await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
-        else:
-            await query.message.reply_text("⚠️ Invalid metadata state.")
 
-    elif data == 'metadata_commands':
-        await query.message.edit("**Select Metadata Command to Set:**", reply_markup=InlineKeyboardMarkup(METADATA_COMMANDS_BUTTONS))
-
-    elif data == 'back_to_metadata':
-        bool_metadata = await db.get_metadata(query.from_user.id)
-        user_metadata = await db.get_metadata_code(query.from_user.id)
-        if bool_metadata:
-            await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
-        else:
-            await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
-
-    elif data.startswith('set_'):
-        metadata_type = data.split('_')[1]
-        metadata_prompt = {
-            'title': 'Gɪᴠᴇ Tʜᴇ Tɪᴛʟᴇ',
-            'author': 'Gɪᴠᴇ Tʜᴇ Aᴜᴛʜᴏʀ',
-            'artist': 'Gɪᴠᴇ Tʜᴇ Aʀᴛɪsᴛ',
-            'audio': 'Gɪᴠᴇ Tʜᴇ Aᴜᴅɪᴏ Tɪᴛʟᴇ',
-            'subtitle': 'Gɪᴠᴇ Tʜᴇ Sᴜʙᴛɪᴛʟᴇ',
-            'video': 'Gɪᴠᴇ Tʜᴇ Vɪᴅᴇᴏ Tɪᴛʟᴇ'
-        }
-        if metadata_type in metadata_prompt:
-            await query.message.reply_text(metadata_prompt[metadata_type], reply_markup=InlineKeyboardMarkup([]))  # Send prompt
-            await db.set_metadata_code(query.from_user.id, metadata_type)  # Set the pending metadata type
-        else:
-            await query.message.reply_text("⚠️ Invalid metadata type.")
+    elif data == 'custom_metadata':
+        await query.message.delete()
+        await query.message.reply_text(Txt.SEND_METADATA)  # Prompt user for metadata
+        # Save the chat ID to handle the user response later
+        await db.set_metadata_code(query.from_user.id, None)
+        # Set a state or use another method to keep track of the pending metadata request
 
 @Client.on_message(filters.private & filters.text)
 async def handle_user_response(bot: Client, message: Message):
     user_id = message.from_user.id
     pending_metadata_code = await db.get_metadata_code(user_id)
     
-    if pending_metadata_code:
-        if pending_metadata_code in ['title', 'author', 'artist', 'audio', 'subtitle', 'video']:
-            await getattr(db, f'set_{pending_metadata_code}')(user_id, message.text)
-            await message.reply_text(f"**Your Metadata `{pending_metadata_code}` Set Successfully ✅**")
-        else:
-            await message.reply_text("⚠️ Invalid metadata type. Please try again.")
-        await db.set_metadata_code(user_id, None)  # Clear pending metadata type
+    if pending_metadata_code is None:
+        # This means the user is responding to a metadata request
+        await db.set_metadata_code(user_id, message.text)
+        await message.reply_text("**Your Metadata Code Set Successfully ✅**")
     else:
         # Handle other text messages or commands
         pass

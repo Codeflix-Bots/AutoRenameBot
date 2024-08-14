@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from helper.database import codeflixbots as db
-from pyromod.exceptions import ListenerTimeout
 from config import Txt
 
 # Inline buttons for metadata toggle

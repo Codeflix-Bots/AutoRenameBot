@@ -11,7 +11,7 @@ class Database:
 
     def new_user(self, id):
         return dict(
-            _id=int(id),                                   
+            _id=int(id),
             file_id=None,
             caption=None,
             format_template=None  # Add this line for the format template
@@ -21,7 +21,7 @@ class Database:
         u = m.from_user
         if not await self.is_user_exist(u.id):
             user = self.new_user(u.id)
-            await self.col.insert_one(user)            
+            await self.col.insert_one(user)
             await send_log(b, u)
 
     async def is_user_exist(self, id):
@@ -38,7 +38,7 @@ class Database:
 
     async def delete_user(self, user_id):
         await self.col.delete_many({'_id': int(user_id)})
-    
+
     async def set_thumbnail(self, id, file_id):
         await self.col.update_one({'_id': int(id)}, {'$set': {'file_id': file_id}})
 
@@ -59,15 +59,15 @@ class Database:
     async def get_format_template(self, id):
         user = await self.col.find_one({'_id': int(id)})
         return user.get('format_template', None)
-        
+
     async def set_media_preference(self, id, media_type):
         await self.col.update_one({'_id': int(id)}, {'$set': {'media_type': media_type}})
-        
+
     async def get_media_preference(self, id):
         user = await self.col.find_one({'_id': int(id)})
         return user.get('media_type', None)
 
-async def set_metadata(self, id, bool_meta):
+    async def set_metadata(self, id, bool_meta):
         await self.col.update_one({'_id': int(id)}, {'$set': {'metadata': bool_meta}})
 
     async def get_metadata(self, id):
@@ -123,6 +123,5 @@ async def set_metadata(self, id, bool_meta):
         user = await self.col.find_one({'_id': int(id)})
         return user.get('video_title', None)
 
-
+# Initialize the Database class
 codeflixbots = Database(Config.DB_URL, Config.DB_NAME)
-        

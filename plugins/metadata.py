@@ -27,29 +27,27 @@ async def query_metadata(bot: Client, query: CallbackQuery):
     user_metadata = await db.get_metadata_code(query.from_user.id)
     
     if data.startswith('metadata_'):
-        _bool = data.split('_')[1]
-        bool_meta = bool(eval(_bool))
+        bool_meta = bool(eval(data.split('_')[1]))  # Evaluate the boolean value
         
         if bool_meta:
-            await db.set_metadata(query.from_user.id, bool_meta=False)
+            await db.set_metadata(query.from_user.id, False)
             await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
         else:
-            await db.set_metadata(query.from_user.id, bool_meta=True)
+            await db.set_metadata(query.from_user.id, True)
             await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
 
     elif data == 'custom_metadata':
         await query.message.delete()
         try:
             metadata = await bot.ask(text=Txt.SEND_METADATA, chat_id=query.from_user.id, filters=filters.text, timeout=30, disable_web_page_preview=True)
-            if not metadata:
-                raise ListenerTimeout()
+            if metadata is None:
+                raise Exception("ListenerTimeout")  # Use a custom exception or handle it as needed
             ms = await query.message.reply_text("**Please Wait...**", reply_to_message_id=metadata.id)
-            await db.set_metadata_code(query.from_user.id, metadata_code=metadata.text)
+            await db.set_metadata_code(query.from_user.id, metadata.text)
             await ms.edit("**Your Metadata Code Set Successfully ✅**")
-        except ListenerTimeout:
-            await query.message.reply_text("⚠️ Error!!\n\n**Request timed out.**\nRestart by using /metadata", reply_to_message_id=query.message.id)
         except Exception as e:
             print(e)
+            await query.message.reply_text("⚠️ Error!!\n\n**Request timed out.**\nRestart by using /metadata", reply_to_message_id=query.message.id)
 
 @Client.on_message(filters.private & filters.command('settitle'))
 async def set_title(bot: Client, message: Message):
@@ -82,7 +80,7 @@ async def set_metadata(bot: Client, message: Message, metadata_type: str):
     if not bool_metadata:
         await message.reply_text("**Metadata editing is currently disabled. Use /metadata to enable it.**")
         return
-    
+
     command_parts = message.text.split(f"/set{metadata_type}", 1)
     if len(command_parts) < 2 or not command_parts[1].strip():
         await message.reply_text(f"**Please provide a {metadata_type} after the command /set{metadata_type}.**\n\n"

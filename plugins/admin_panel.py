@@ -31,7 +31,7 @@ async def restart_bot(b, m):
 @Client.on_message(filters.private & filters.command(["tutorial"]))
 async def tutorial(bot,message):
 	user_id = message.from_user.id
-	format_template = await madflixbotz.get_format_template(user_id)
+	format_template = await codeflixbots.get_format_template(user_id)
 	await message.reply_text(
 	    text =Txt.FILE_NAME_TXT.format(format_template=format_template),
 	    disable_web_page_preview=True,

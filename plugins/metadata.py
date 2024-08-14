@@ -43,7 +43,7 @@ async def query_metadata(bot: Client, query: CallbackQuery):
         await db.set_metadata_code(query.from_user.id, None)
         # Set a state or use another method to keep track of the pending metadata request
 
-@Client.on_message(filters.private & filters.text & ~filters.command())
+@Client.on_message(filters.private & filters.text)
 async def handle_user_response(bot: Client, message: Message):
     user_id = message.from_user.id
     pending_metadata_code = await db.get_metadata_code(user_id)

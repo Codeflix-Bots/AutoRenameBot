@@ -67,6 +67,61 @@ class Database:
         user = await self.col.find_one({'_id': int(id)})
         return user.get('media_type', None)
 
+async def set_metadata(self, id, bool_meta):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'metadata': bool_meta}})
+
+    async def get_metadata(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('metadata', None)
+
+    async def set_metadata_code(self, id, metadata_code):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'metadata_code': metadata_code}})
+
+    async def get_metadata_code(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('metadata_code', None)
+
+    async def set_title(self, id, title):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'title': title}})
+
+    async def get_title(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('title', None)
+
+    async def set_author(self, id, author):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'author': author}})
+
+    async def get_author(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('author', None)
+
+    async def set_artist(self, id, artist):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'artist': artist}})
+
+    async def get_artist(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('artist', None)
+
+    async def set_audio(self, id, audio_title):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'audio_title': audio_title}})
+
+    async def get_audio(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('audio_title', None)
+
+    async def set_subtitle(self, id, subtitle):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'subtitle': subtitle}})
+
+    async def get_subtitle(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('subtitle', None)
+
+    async def set_video(self, id, video_title):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'video_title': video_title}})
+
+    async def get_video(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('video_title', None)
 
 
 codeflixbots = Database(Config.DB_URL, Config.DB_NAME)

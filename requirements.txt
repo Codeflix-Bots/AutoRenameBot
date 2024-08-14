@@ -7,3 +7,4 @@ Pillow==9.5.0
 aiohttp==3.8.4
 pytz==2023.3
 psutil
+pyromod

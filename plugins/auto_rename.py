@@ -7,7 +7,14 @@ async def auto_rename_command(client, message):
     user_id = message.from_user.id
 
     # Extract the format from the command
-    format_template = message.text.split("/autorename", 1)[1].strip()
+    command_parts = message.text.split("/autorename", 1)
+    if len(command_parts) < 2 or not command_parts[1].strip():
+        await message.reply_text("**ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ɴᴇᴡ ɴᴀᴍᴇ ᴀꜰᴛᴇʀ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /autorename**\n\n"
+                                 "ʜᴇʀᴇ'ꜱ ʜᴏᴡ ᴛᴏ ᴜꜱᴇ ɪᴛ:\n"
+                                 "**ᴇxᴀᴍᴘʟᴇ ꜰᴏʀᴍᴀᴛ:** `ᴍʏᴄᴏᴏʟᴠɪᴅᴇᴏ [ᴇᴘɪꜱᴏᴅᴇ] [ǫᴜᴀʟɪᴛʏ]`")
+        return
+
+    format_template = command_parts[1].strip()
 
     # Save the format template to the database
     await codeflixbots.set_format_template(user_id, format_template)

@@ -38,16 +38,23 @@ async def query_metadata(bot: Client, query: CallbackQuery):
 
     elif data == 'custom_metadata':
         await query.message.delete()
-        try:
-            metadata = await bot.ask(text=Txt.SEND_METADATA, chat_id=query.from_user.id, filters=filters.text, timeout=30, disable_web_page_preview=True)
-            if metadata is None:
-                raise Exception("ListenerTimeout")  # Use a custom exception or handle it as needed
-            ms = await query.message.reply_text("**Please Wait...**", reply_to_message_id=metadata.id)
-            await db.set_metadata_code(query.from_user.id, metadata.text)
-            await ms.edit("**Your Metadata Code Set Successfully ✅**")
-        except Exception as e:
-            print(e)
-            await query.message.reply_text("⚠️ Error!!\n\n**Request timed out.**\nRestart by using /metadata", reply_to_message_id=query.message.id)
+        await query.message.reply_text(Txt.SEND_METADATA)  # Prompt user for metadata
+        # Save the chat ID to handle the user response later
+        await db.set_metadata_code(query.from_user.id, None)
+        # Set a state or use another method to keep track of the pending metadata request
+
+@Client.on_message(filters.private & filters.text & ~filters.command())
+async def handle_user_response(bot: Client, message: Message):
+    user_id = message.from_user.id
+    pending_metadata_code = await db.get_metadata_code(user_id)
+    
+    if pending_metadata_code is None:
+        # This means the user is responding to a metadata request
+        await db.set_metadata_code(user_id, message.text)
+        await message.reply_text("**Your Metadata Code Set Successfully ✅**")
+    else:
+        # Handle other text messages or commands
+        pass
 
 @Client.on_message(filters.private & filters.command('settitle'))
 async def set_title(bot: Client, message: Message):

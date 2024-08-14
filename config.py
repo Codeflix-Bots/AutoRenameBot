@@ -15,7 +15,7 @@ class Config(object):
  
     # other configs
     BOT_UPTIME  = time.time()
-    START_PIC   = os.environ.get("START_PIC", "https://graph.org/file/2cc591a534ab31e38ebf7.jpg")
+    START_PIC   = os.environ.get("START_PIC", "https://graph.org/file/29a3acbbab9de5f45a5fe.jpg")
     ADMIN       = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMIN', '6497757690').split()]
     FORCE_SUB   = os.environ.get("FORCE_SUB", "codeflix_bots") 
     LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "-1001868871195"))

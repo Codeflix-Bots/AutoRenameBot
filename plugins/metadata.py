@@ -4,24 +4,54 @@ from helper.database import codeflixbots as db
 from config import Txt
 
 # Inline buttons for metadata toggle
-ON = [[InlineKeyboardButton('Metadata On ✅', callback_data='metadata_1')], 
-      [InlineKeyboardButton('Set Custom Metadata', callback_data='custom_metadata')]]
-OFF = [[InlineKeyboardButton('Metadata Off ❌', callback_data='metadata_0')], 
-       [InlineKeyboardButton('Set Custom Metadata', callback_data='custom_metadata')]]
+ON = [
+    [InlineKeyboardButton('Metadata On ✅', callback_data='metadata_1')],
+    [InlineKeyboardButton('Set Custom Metadata', callback_data='custom_metadata')],
+    [InlineKeyboardButton('Set Title', callback_data='set_title')],
+    [InlineKeyboardButton('Set Author', callback_data='set_author')],
+    [InlineKeyboardButton('Set Artist', callback_data='set_artist')],
+    [InlineKeyboardButton('Set Audio', callback_data='set_audio')],
+    [InlineKeyboardButton('Set Subtitle', callback_data='set_subtitle')],
+    [InlineKeyboardButton('Set Video', callback_data='set_video')]
+]
+OFF = [
+    [InlineKeyboardButton('Metadata Off ❌', callback_data='metadata_0')],
+    [InlineKeyboardButton('Set Custom Metadata', callback_data='custom_metadata')],
+    [InlineKeyboardButton('Set Title', callback_data='set_title')],
+    [InlineKeyboardButton('Set Author', callback_data='set_author')],
+    [InlineKeyboardButton('Set Artist', callback_data='set_artist')],
+    [InlineKeyboardButton('Set Audio', callback_data='set_audio')],
+    [InlineKeyboardButton('Set Subtitle', callback_data='set_subtitle')],
+    [InlineKeyboardButton('Set Video', callback_data='set_video')]
+]
 
 @Client.on_message(filters.private & filters.command('metadata'))
 async def handle_metadata(bot: Client, message: Message):
     ms = await message.reply_text("**Please Wait...**", reply_to_message_id=message.id)
     bool_metadata = await db.get_metadata(message.from_user.id)
+    
+    metadata = {
+        "title": await db.get_title(message.from_user.id),
+        "author": await db.get_author(message.from_user.id),
+        "artist": await db.get_artist(message.from_user.id),
+        "audio": await db.get_audio(message.from_user.id),
+        "subtitle": await db.get_subtitle(message.from_user.id),
+        "video": await db.get_video(message.from_user.id),
+    }
+    
     user_metadata = await db.get_metadata_code(message.from_user.id)
+    
+    metadata_text = "\n".join(f"➜ **{key.capitalize()}**: `{value}`" for key, value in metadata.items() if value)
+    metadata_text = metadata_text if metadata_text else "No metadata set."
+    
     await ms.delete()
     
     if bool_metadata:
-        return await message.reply_text(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
+        return await message.reply_text(f"Your Current Metadata:\n\n{metadata_text}\n\n**Custom Metadata Code:** `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
     
-    return await message.reply_text(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
+    return await message.reply_text(f"Your Current Metadata:\n\n{metadata_text}\n\n**Custom Metadata Code:** `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
 
-@Client.on_callback_query(filters.regex('.*?(custom_metadata|metadata).*?'))
+@Client.on_callback_query(filters.regex('.*?(custom_metadata|metadata|set_).*?'))
 async def query_metadata(bot: Client, query: CallbackQuery):
     data = query.data
     user_metadata = await db.get_metadata_code(query.from_user.id)
@@ -39,19 +69,23 @@ async def query_metadata(bot: Client, query: CallbackQuery):
     elif data == 'custom_metadata':
         await query.message.delete()
         await query.message.reply_text(Txt.SEND_METADATA)  # Prompt user for metadata
-        # Save the chat ID to handle the user response later
         await db.set_metadata_code(query.from_user.id, None)
-        # Set a state or use another method to keep track of the pending metadata request
+        
+    elif data.startswith('set_'):
+        await query.message.delete()
+        metadata_type = data.split('_', 1)[1]
+        await query.message.reply_text(f"Please provide the new {metadata_type}:", reply_to_message_id=query.message.id)
+        await db.set_metadata_code(query.from_user.id, metadata_type)
 
 @Client.on_message(filters.private & filters.text)
 async def handle_user_response(bot: Client, message: Message):
     user_id = message.from_user.id
-    pending_metadata_code = await db.get_metadata_code(user_id)
+    pending_metadata_type = await db.get_metadata_code(user_id)
     
-    if pending_metadata_code is None:
-        # This means the user is responding to a metadata request
-        await db.set_metadata_code(user_id, message.text)
-        await message.reply_text("**Your Metadata Code Set Successfully ✅**")
+    if pending_metadata_type:
+        await getattr(db, f'set_{pending_metadata_type}')(user_id, message.text)
+        await message.reply_text(f"**{pending_metadata_type.capitalize()} has been set to:** `{message.text}`")
+        await db.set_metadata_code(user_id, None)  # Clear pending metadata request
     else:
         # Handle other text messages or commands
         pass

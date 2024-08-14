@@ -38,14 +38,15 @@ async def query_metadata(bot: Client, query: CallbackQuery):
     user_metadata = await db.get_metadata_code(query.from_user.id)
     
     if data.startswith('metadata_'):
-        bool_meta = bool(eval(data.split('_')[1]))  # Evaluate the boolean value
-        
-        if bool_meta:
+        meta_state = data.split('_')[1]  # Extract the state part
+        if meta_state == '1':
             await db.set_metadata(query.from_user.id, False)
             await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(OFF))
-        else:
+        elif meta_state == '0':
             await db.set_metadata(query.from_user.id, True)
             await query.message.edit(f"Your Current Metadata:\n\n➜ `{user_metadata}`", reply_markup=InlineKeyboardMarkup(ON))
+        else:
+            await query.message.reply_text("⚠️ Invalid metadata state.")
 
     elif data == 'metadata_commands':
         await query.message.edit("**Select Metadata Command to Set:**", reply_markup=InlineKeyboardMarkup(METADATA_COMMANDS_BUTTONS))
@@ -68,8 +69,11 @@ async def query_metadata(bot: Client, query: CallbackQuery):
             'subtitle': 'Gɪᴠᴇ Tʜᴇ Sᴜʙᴛɪᴛʟᴇ',
             'video': 'Gɪᴠᴇ Tʜᴇ Vɪᴅᴇᴏ Tɪᴛʟᴇ'
         }
-        await query.message.reply_text(metadata_prompt[metadata_type], reply_markup=InlineKeyboardMarkup([]))  # Send prompt
-        await db.set_metadata_code(query.from_user.id, metadata_type)  # Set the pending metadata type
+        if metadata_type in metadata_prompt:
+            await query.message.reply_text(metadata_prompt[metadata_type], reply_markup=InlineKeyboardMarkup([]))  # Send prompt
+            await db.set_metadata_code(query.from_user.id, metadata_type)  # Set the pending metadata type
+        else:
+            await query.message.reply_text("⚠️ Invalid metadata type.")
 
 @Client.on_message(filters.private & filters.text)
 async def handle_user_response(bot: Client, message: Message):
@@ -77,7 +81,6 @@ async def handle_user_response(bot: Client, message: Message):
     pending_metadata_code = await db.get_metadata_code(user_id)
     
     if pending_metadata_code:
-        # Ensure pending_metadata_code is clean
         if pending_metadata_code in ['title', 'author', 'artist', 'audio', 'subtitle', 'video']:
             await getattr(db, f'set_{pending_metadata_code}')(user_id, message.text)
             await message.reply_text(f"**Your Metadata `{pending_metadata_code}` Set Successfully ✅**")

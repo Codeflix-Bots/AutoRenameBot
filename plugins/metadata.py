@@ -4,6 +4,9 @@ from pyrogram.errors import FloodWait
 from helper.database import codeflixbots
 from config import Txt
 
+# State tracking
+pending_metadata_requests = {}
+
 # Define the inline keyboard options
 ON = [
     [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ ᴏɴ •', callback_data='metadata_1')],
@@ -50,26 +53,29 @@ async def query_metadata(client: Client, query: CallbackQuery):
 
         elif data == 'custom_metadata':
             await query.message.edit("**Please send me the new metadata code within 30 seconds.**")
-            
-            # Function to handle the response
-            def check_response(msg):
-                return msg.from_user.id == query.from_user.id
-
-            try:
-                response = await client.listen(query.message.chat.id, filters=filters.text & filters.create(check_response), timeout=30)
-                metadata_code = response.text
-                await codeflixbots.set_metadata_code(query.from_user.id, metadata_code=metadata_code)
-                await response.reply_text("**Your Metadata Code Set Successfully ✅**", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close')]]))
-            except FloodWait as e:
-                await query.message.reply_text(
-                    f"⚠️ Error !!\n\n**You are being rate limited.**\n\nPlease try again later.",
-                    reply_to_message_id=query.message.id
-                )
-            except Exception as e:
-                await query.message.reply_text(
-                    f"⚠️ Error !!\n\n**An unexpected error occurred.**\n\n{str(e)}",
-                    reply_to_message_id=query.message.id
-                )
+            pending_metadata_requests[query.from_user.id] = query.message.id
     except Exception as e:
         await query.message.reply_text(f"An error occurred: {str(e)}")
-            
+
+@Client.on_message(filters.private & filters.text)
+async def handle_custom_metadata(client: Client, message: Message):
+    user_id = message.from_user.id
+    if user_id in pending_metadata_requests:
+        try:
+            metadata_code = message.text
+            await codeflixbots.set_metadata_code(user_id, metadata_code=metadata_code)
+            await message.reply_text("**Your Metadata Code Set Successfully ✅**", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close')]]))
+            del pending_metadata_requests[user_id]
+        except FloodWait as e:
+            await message.reply_text(
+                f"⚠️ Error !!\n\n**You are being rate limited.**\n\nPlease try again later.",
+                reply_to_message_id=message.id
+            )
+        except Exception as e:
+            await message.reply_text(
+                f"⚠️ Error !!\n\n**An unexpected error occurred.**\n\n{str(e)}",
+                reply_to_message_id=message.id
+            )
+    else:
+        await message.reply_text("**You are not currently setting metadata.**")
+                                 

@@ -6,7 +6,7 @@ from datetime import datetime
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from helper.utils import progress_for_pyrogram, humanbytes, convert
-from helper.database import madflixbotz
+from helper.database import codeflixbots
 from config import Config
 import os
 import time
@@ -140,8 +140,8 @@ print(f"Extracted Episode Number: {episode_number}")
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
     firstname = message.from_user.first_name
-    format_template = await madflixbotz.get_format_template(user_id)
-    media_preference = await madflixbotz.get_media_preference(user_id)
+    format_template = await codeflixbots.get_format_template(user_id)
+    media_preference = await codeflixbots.get_media_preference(user_id)
 
     if not format_template:
         return await message.reply_text("Please Set An Auto Rename Format First Using /autorename")
@@ -222,8 +222,8 @@ async def auto_rename_files(client, message):
 
         upload_msg = await download_msg.edit("Trying To Uploading.....")
         ph_path = None
-        c_caption = await madflixbotz.get_caption(message.chat.id)
-        c_thumb = await madflixbotz.get_thumbnail(message.chat.id)
+        c_caption = await codeflixbots.get_caption(message.chat.id)
+        c_thumb = await codeflixbots.get_thumbnail(message.chat.id)
 
         caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}**"
 
@@ -285,11 +285,3 @@ async def auto_rename_files(client, message):
 
 # Remove the entry from renaming_operations after successful renaming
         del renaming_operations[file_id]
-
-
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Developer @JishuDeveloper

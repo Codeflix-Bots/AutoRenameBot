@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from helper.database import codeflixbots
-from pyromod.exceptions import ListenerTimeout
+from pyromod import listen
 from config import Txt
 
 

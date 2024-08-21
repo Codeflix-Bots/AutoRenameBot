@@ -7,4 +7,3 @@ Pillow
 aiohttp
 pytz
 psutil
-pyromod

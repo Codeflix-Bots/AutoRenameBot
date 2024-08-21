@@ -49,36 +49,27 @@ async def query_metadata(client: Client, query: CallbackQuery):
             )
 
         elif data == 'custom_metadata':
-            await query.message.delete()
+            await query.message.edit("**Please send me the new metadata code within 30 seconds.**")
+            
+            # Function to handle the response
+            def check_response(msg):
+                return msg.from_user.id == query.from_user.id
+
             try:
-                metadata = await client.ask(
-                    text=Txt.SEND_METADATA,
-                    chat_id=query.from_user.id,
-                    filters=filters.text,
-                    timeout=30,
-                    disable_web_page_preview=True,
-                    reply_to_message_id=query.message.id
-                )
+                response = await client.listen(query.message.chat.id, filters=filters.text & filters.create(check_response), timeout=30)
+                metadata_code = response.text
+                await codeflixbots.set_metadata_code(query.from_user.id, metadata_code=metadata_code)
+                await response.reply_text("**Your Metadata Code Set Successfully ✅**", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close')]]))
             except FloodWait as e:
-                # Handle FloodWait exceptions specifically
                 await query.message.reply_text(
                     f"⚠️ Error !!\n\n**You are being rate limited.**\n\nPlease try again later.",
                     reply_to_message_id=query.message.id
                 )
-                return
             except Exception as e:
-                # Handle other exceptions
                 await query.message.reply_text(
                     f"⚠️ Error !!\n\n**An unexpected error occurred.**\n\n{str(e)}",
                     reply_to_message_id=query.message.id
                 )
-                return
-
-            ms = await query.message.reply_text("**Please Wait...**", reply_to_message_id=metadata.id)
-            await codeflixbots.set_metadata_code(query.from_user.id, metadata_code=metadata.text)
-            await ms.edit(
-                "**Your Metadata Code Set Successfully ✅**",
-                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close')]])
-            )
     except Exception as e:
         await query.message.reply_text(f"An error occurred: {str(e)}")
+            

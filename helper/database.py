@@ -67,6 +67,26 @@ class Database:
         user = await self.col.find_one({'_id': int(id)})
         return user.get('media_type', None)
 
+    #======================= Metadata ========================#
+        
+    async def set_metadata(self, id, bool_meta):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'metadata': bool_meta}})
+        
+    async def get_metadata(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('metadata', None)
+        
+        
+        
+    #======================= Metadata Code ========================#    
+        
+    async def set_metadata_code(self, id, metadata_code):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'metadata_code': metadata_code}})
+
+    async def get_metadata_code(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('metadata_code', None)   
+
 
 
 codeflixbots = Database(Config.DB_URL, Config.DB_NAME)

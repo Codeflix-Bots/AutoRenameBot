@@ -69,11 +69,4 @@ class Database:
 
 
 
-madflixbotz = Database(Config.DB_URL, Config.DB_NAME)
-        
-
-
-# Jishu Developer 
-# Don't Remove Credit 🥺
-# Telegram Channel @Madflix_Bots
-# Developer @JishuDeveloper
+codeflixbots = Database(Config.DB_URL, Config.DB_NAME)

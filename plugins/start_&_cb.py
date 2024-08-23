@@ -98,6 +98,13 @@ async def cb_handler(client, query: CallbackQuery):
                 [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
             ])
         )
+    elif data == "metadata":
+        await query.message.edit_caption(
+            caption=Txt.SEND_METADATA,
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
+            ])
+        )
     elif data == "premiumx":
         await query.message.edit_caption(
             caption=Txt.PREMIUM_TXT,
@@ -196,6 +203,7 @@ async def help_command(client, message):
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],
             [InlineKeyboardButton('• ᴛʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'), InlineKeyboardButton('ᴄᴀᴘᴛɪᴏɴ •', callback_data='caption')],
-            [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')]
+            [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='metadata'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
+            [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home')]
         ])
     )

@@ -69,19 +69,18 @@ async def cb_handler(client, query: CallbackQuery):
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],
                 [InlineKeyboardButton('• ᴛʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'), InlineKeyboardButton('ᴄᴀᴘᴛɪᴏɴ •', callback_data='caption')],
-                [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='metadatax'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
+                [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='meta'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
                 [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home')]
             ])
         )
 
-    elif data == "metadatax":
+    elif data == "meta":
         await query.message.edit_text(  # Change edit_caption to edit_text
             text=Txt.SEND_METADATA,  # Changed from caption to text
             reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
             ])
         )
-
     elif data == "donate":
         await query.message.edit_text(
             text=Txt.DONATE_TXT,
@@ -211,7 +210,7 @@ async def help_command(client, message):
         reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],
             [InlineKeyboardButton('• ᴛʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'), InlineKeyboardButton('ᴄᴀᴘᴛɪᴏɴ •', callback_data='caption')],
-            [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='metadatax'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
+            [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='meta'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
             [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home')]
         ])
     )

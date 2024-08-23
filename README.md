@@ -30,6 +30,7 @@ _**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ᴀᴜᴛᴏ ʀᴇ�
   
 ## ғᴇᴀᴛᴜʀᴇs
 - [x] Renames very fast .
+- [x] Metadata Support
 - [x] Permanent Thumbnail support.
 - [x] Supports Broadcasts.
 - [x] Set custom caption.
@@ -64,6 +65,7 @@ _**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ᴀᴜᴛᴏ ʀᴇ�
 ```
 start - Check if the bot is running.
 autorename - To auto rename your files.
+metadata - to set metadata
 setmedia - To set your media type preference.
 tutorial - To know how to use me.
 viewthumb - To view current thumbnail.

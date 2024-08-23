@@ -52,11 +52,13 @@ _**ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ ᴀs [ᴀᴜᴛᴏ ʀᴇ�
 - [x] API_ID - get it from telegram app
 - [x] API_HASH - get it from telegram app
 - [x] BOT_TOKEN - get it from telegram app
-- [x] ADMINS - for 2 or more '12345678 89674523' add space between ids
+- [x] ADMIN - for 2 or more '12345678 89674523' add space between ids
+- [x] DB_URL - MongoDB URL from [MongoDB Atlas](https://cloud.mongodb.com).
+- [x] DB_NAME - Your MongoDB database name. **Optional**.
+- [x] FORCE_SUB_CHANNELS  - Your force subscription channel usernames without `@`. **Optional**. Use format `1CHANNEL,2CHANNEL`.
+- [x] START_PIC - Start message photo. **Optional**.
 - [x] LOG_CHANNEL - add a private channel id
-- [x] CHANNELS - add your database channel id ,if u will share your file here the bot will add the file in database autometiccaly
-- [x] DATABASE_URI - if you dont know how to get it, read this documentation from scratch
-- [x] LOG_CHANNEL - add a private channel id
+- [x] WEBHOOK - Set to `True` if your server requires web services, otherwise set to `False`. **Optional**.
 ```
 </details>
 <details><summary><b> - ᴄᴏᴍᴍᴍᴀɴᴅs :</summary>

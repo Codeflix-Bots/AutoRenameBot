@@ -4,6 +4,7 @@ from pytz import timezone
 from config import Config, Txt 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+
 async def progress_for_pyrogram(current, total, ud_type, message, start):
     now = time.time()
     diff = now - start
@@ -35,8 +36,6 @@ async def progress_for_pyrogram(current, total, ud_type, message, start):
             )
         except:
             pass
-            
-            
 
 def humanbytes(size):    
     if not size:
@@ -47,7 +46,7 @@ def humanbytes(size):
     while size > power:
         size /= power
         n += 1
-    return str(round(size, 2)) + " " + Dic_powerN[n] + 'b'
+    return str(round(size, 2)) + " " + Dic_powerN[n] + 'ʙ'
 
 
 def TimeFormatter(milliseconds: int) -> str:
@@ -55,11 +54,11 @@ def TimeFormatter(milliseconds: int) -> str:
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    tmp = ((str(days) + "d, ") if days else "") + \
-        ((str(hours) + "h, ") if hours else "") + \
-        ((str(minutes) + "m, ") if minutes else "") + \
-        ((str(seconds) + "s, ") if seconds else "") + \
-        ((str(milliseconds) + "ms, ") if milliseconds else "")
+    tmp = ((str(days) + "ᴅ, ") if days else "") + \
+        ((str(hours) + "ʜ, ") if hours else "") + \
+        ((str(minutes) + "ᴍ, ") if minutes else "") + \
+        ((str(seconds) + "ꜱ, ") if seconds else "") + \
+        ((str(milliseconds) + "ᴍꜱ, ") if milliseconds else "")
     return tmp[:-2] 
 
 def convert(seconds):
@@ -77,6 +76,5 @@ async def send_log(b, u):
         time = curr.strftime('%I:%M:%S %p')
         await b.send_message(
             Config.LOG_CHANNEL,
-            f"<b><u>New User Started The Bot</u></b> \n\n<b>User ID</b> : `{u.id}` \n<b>First Name</b> : {u.first_name} \n<b>Last Name</b> : {u.last_name} \n<b>User Name</b> : @{u.username} \n<b>User Mention</b> : {u.mention} \n<b>User Link</b> : <a href='tg://openmessage?user_id={u.id}'>Click Here</a>\n\nDate: {date}\nTime: {time}\n\nBy: {b.mention}"
+            f"**--Nᴇᴡ Uꜱᴇʀ Sᴛᴀʀᴛᴇᴅ Tʜᴇ Bᴏᴛ--**\n\nUꜱᴇʀ: {u.mention}\nIᴅ: `{u.id}`\nUɴ: @{u.username}\n\nDᴀᴛᴇ: {date}\nTɪᴍᴇ: {time}\n\nBy: {b.mention}"
         )
-        

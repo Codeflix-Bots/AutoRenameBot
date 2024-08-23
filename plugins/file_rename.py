@@ -191,7 +191,7 @@ async def auto_rename_files(client, message):
     os.makedirs(os.path.dirname(renamed_file_path), exist_ok=True)
     os.makedirs(os.path.dirname(metadata_file_path), exist_ok=True)
 
-    download_msg = await message.reply_text("Downloading the file...")
+    download_msg = await message.reply_text("**__Downloading...__**")
 
     try:
         path = await client.download_media(
@@ -248,7 +248,7 @@ async def auto_rename_files(client, message):
             path = renamed_file_path
 
         # Upload the file
-        upload_msg = await download_msg.edit("Uploading the file...")
+        upload_msg = await download_msg.edit("**__Uploading...__**")
 
         ph_path = None
         c_caption = await codeflixbots.get_caption(message.chat.id)
@@ -305,15 +305,16 @@ async def auto_rename_files(client, message):
                     progress_args=("Upload Started...", upload_msg, time.time()),
                 )
         except Exception as e:
-            os.remove(path)
+            os.remove(file_path)
             if ph_path:
                 os.remove(ph_path)
-            return await upload_msg.edit(f"**Upload Error:** {e}")
+            # Mark the file as ignored
+            return await upload_msg.edit(f"Error: {e}")
 
-        # await upload_msg.edit("Upload Complete ✅")
-
-    except Exception as e:
-        await download_msg.edit(f"**Error:** {e}")
+        await download_msg.delete() 
+        os.remove(file_path)
+        if ph_path:
+            os.remove(ph_path)
 
     finally:
         # Clean up

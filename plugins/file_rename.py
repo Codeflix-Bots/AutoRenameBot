@@ -311,7 +311,7 @@ async def auto_rename_files(client, message):
                     progress_args=("Upload Started...", upload_msg, time.time()),
                 )
         except Exception as e:
-            os.remove(file_path)
+            os.remove(renamed_file_path)
             if ph_path:
                 os.remove(ph_path)
             # Mark the file as ignored

@@ -192,7 +192,6 @@ async def auto_rename_files(client, message):
 
     _, file_extension = os.path.splitext(file_name)
     renamed_file_name = f"{format_template}{file_extension}"
-    file_path = f"downloads/{new_file_name}"
     renamed_file_path = f"downloads/{renamed_file_name}"
     metadata_file_path = f"Metadata/{renamed_file_name}"
     os.makedirs(os.path.dirname(renamed_file_path), exist_ok=True)

@@ -1,81 +1,94 @@
 from pyrogram import Client, filters
-from pyrogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
-from pyrogram.errors import FloodWait
+from pyrogram.types import (
+    Message,
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
 from helper.database import codeflixbots
-from config import Txt
+from pyromod.exceptions import ListenerTimeout
+from config import Txt, Config
 
-# State tracking
-pending_metadata_requests = {}
 
-# Define the inline keyboard options
+# AUTH_USERS = Config.AUTH_USERS
+
 ON = [
-    [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ ᴏɴ •', callback_data='metadata_1')],
-    [InlineKeyboardButton('• sᴇᴛ ᴄᴜsᴛᴏᴍ ᴍᴇᴛᴀᴅᴀᴛᴀ •', callback_data='custom_metadata')]
+    [InlineKeyboardButton("Metadata On ✅", callback_data="metadata_1")],
+    [InlineKeyboardButton("Set Custom Metadata", callback_data="cutom_metadata")],
 ]
-
 OFF = [
-    [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ ᴏғғ •', callback_data='metadata_0')],
-    [InlineKeyboardButton('• sᴇᴛ ᴄᴜsᴛᴏᴍ ᴍᴇᴛᴀᴅᴀᴛᴀ •', callback_data='custom_metadata')]
+    [InlineKeyboardButton("Metadata Off ❌", callback_data="metadata_0")],
+    [InlineKeyboardButton("Set Custom Metadata", callback_data="cutom_metadata")],
 ]
 
-@Client.on_message(filters.private & filters.command('metadata'))
-async def handle_metadata(client: Client, message: Message):
-    try:
-        ms = await message.reply_text("**Please Wait...**", reply_to_message_id=message.id)
-        bool_metadata = await codeflixbots.get_metadata(message.from_user.id)
-        user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
-        await ms.delete()
-        
-        reply_markup = InlineKeyboardMarkup(ON if bool_metadata else OFF)
-        await message.reply_text(
-            f"**Your Current Metadata :-**\n\n➜ `{user_metadata}` ",
-            quote=True,
-            reply_markup=reply_markup
+
+@Client.on_message(filters.private & filters.command("metadata"))
+async def handle_metadata(bot: Client, message: Message):
+
+    ms = await message.reply_text("**Please Wait...**", reply_to_message_id=message.id)
+    bool_metadata = await codeflixbots.get_metadata(message.from_user.id)
+    user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
+    await ms.delete()
+    if bool_metadata:
+
+        return await message.reply_text(
+            f"<b>Your Current Metadata:</b>\n\n➜ `{user_metadata}` ",
+            reply_markup=InlineKeyboardMarkup(ON),
         )
-    except Exception as e:
-        await message.reply_text(f"An error occurred: {str(e)}")
 
-@Client.on_callback_query(filters.regex('.*?(custom_metadata|metadata).*?'))
-async def query_metadata(client: Client, query: CallbackQuery):
-    try:
-        data = query.data
+    return await message.reply_text(
+        f"<b>Your Current Metadata:</b>\n\n➜ `{user_metadata}` ",
+        reply_markup=InlineKeyboardMarkup(OFF),
+    )
 
-        if data.startswith('metadata_'):
-            bool_meta = data.split('_')[1] == "1"
-            user_metadata = await codeflixbots.get_metadata_code(query.from_user.id)
-            
-            await codeflixbots.set_metadata(query.from_user.id, bool_meta=not bool_meta)
-            reply_markup = InlineKeyboardMarkup(ON if not bool_meta else OFF)
+
+@Client.on_callback_query(filters.regex(".*?(custom_metadata|metadata).*?"))
+async def query_metadata(bot: Client, query: CallbackQuery):
+
+    data = query.data
+
+    if data.startswith("metadata_"):
+        _bool = data.split("_")[1]
+        user_metadata = await codeflixbots.get_metadata_code(query.from_user.id)
+
+        if bool(eval(_bool)):
+            await codeflixbots.set_metadata(query.from_user.id, bool_meta=False)
             await query.message.edit(
-                f"**Your Current Metadata :-**\n\n➜ `{user_metadata}` ",
-                reply_markup=reply_markup
+                f"<b>Your Current Metadata:</b>\n\n➜ `{user_metadata}` ",
+                reply_markup=InlineKeyboardMarkup(OFF),
             )
 
-        elif data == 'custom_metadata':
-            await query.message.edit("**Please send me the new metadata code within 30 seconds.**")
-            pending_metadata_requests[query.from_user.id] = query.message.id
-    except Exception as e:
-        await query.message.reply_text(f"An error occurred: {str(e)}")
+        else:
+            await codeflixbots.set_metadata(query.from_user.id, bool_meta=True)
+            await query.message.edit(
+                f"<b>Your Current Metadata:</b>\n\n➜ `{user_metadata}` ",
+                reply_markup=InlineKeyboardMarkup(ON),
+            )
 
-@Client.on_message(filters.private & filters.text)
-async def handle_custom_metadata(client: Client, message: Message):
-    user_id = message.from_user.id
-    if user_id in pending_metadata_requests:
+    elif data == "cutom_metadata":
+        await query.message.delete()
         try:
-            metadata_code = message.text
-            await codeflixbots.set_metadata_code(user_id, metadata_code=metadata_code)
-            await message.reply_text("**Your Metadata Code Set Successfully ✅**", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('• ᴄʟᴏsᴇ •', callback_data='close')]]))
-            del pending_metadata_requests[user_id]
-        except FloodWait as e:
-            await message.reply_text(
-                f"⚠️ Error !!\n\n**You are being rate limited.**\n\nPlease try again later.",
-                reply_to_message_id=message.id
+            try:
+                metadata = await bot.ask(
+                    text=Txt.SEND_METADATA,
+                    chat_id=query.from_user.id,
+                    filters=filters.text,
+                    timeout=30,
+                    disable_web_page_preview=True,
+                )
+            except ListenerTimeout:
+                await query.message.reply_text(
+                    "⚠️ Error!!\n\n**Request timed out.**\nRestart by using /metadata",
+                    reply_to_message_id=query.message.id,
+                )
+                return
+            print(metadata.text)
+            ms = await query.message.reply_text(
+                "**Please Wait...**", reply_to_message_id=metadata.id
             )
+            await codeflixbots.set_metadata_code(
+                query.from_user.id, metadata_code=metadata.text
+            )
+            await ms.edit("**Your Metadta Code Set Successfully ✅**")
         except Exception as e:
-            await message.reply_text(
-                f"⚠️ Error !!\n\n**An unexpected error occurred.**\n\n{str(e)}",
-                reply_to_message_id=message.id
-            )
-    else:
-        await message.reply_text("**You are not currently setting metadata.**")
-                                 
+            print(e)

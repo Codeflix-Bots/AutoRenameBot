@@ -1,35 +1,90 @@
-from pyrogram import Client, filters, enums 
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import os
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyrogram.errors import UserNotParticipant
 from config import Config
-from helper.database import codeflixbots
 
-async def not_subscribed(_, client, message):
-    await codeflixbots.add_user(client, message)
-    if not Config.FORCE_SUB:
-        return False
-    try:             
-        user = await client.get_chat_member(Config.FORCE_SUB, message.from_user.id) 
-        if user.status == enums.ChatMemberStatus.BANNED:
-            return True 
-        else:
-            return False                
-    except UserNotParticipant:
-        pass
-    return True
+FORCE_SUB_CHANNELS = Config.FORCE_SUB_CHANNELS
+
+
+async def not_subscribed(_, __, message):
+    for channel in FORCE_SUB_CHANNELS:
+        try:
+            user = await message._client.get_chat_member(channel, message.from_user.id)
+            if user.status in {"kicked", "left"}:
+                return True
+        except UserNotParticipant:
+            return True
+    return False
 
 
 @Client.on_message(filters.private & filters.create(not_subscribed))
 async def forces_sub(client, message):
+    not_joined_channels = []
+    for channel in FORCE_SUB_CHANNELS:
+        try:
+            user = await client.get_chat_member(channel, message.from_user.id)
+            if user.status in {"kicked", "left"}:
+                not_joined_channels.append(channel)
+        except UserNotParticipant:
+            not_joined_channels.append(channel)
+
     buttons = [
-        [InlineKeyboardButton(text="• ᴜᴘᴅᴀᴛᴇs •", url=f"https://t.me/{Config.FORCE_SUB}")],
-        [InlineKeyboardButton(text="• sᴜᴘᴘᴏʀᴛ •", url="https://t.me/CodeflixSupport")]
+        [
+            InlineKeyboardButton(
+                text=f"• ᴜᴘᴅᴀᴛᴇs {channel.capitalize()} •", url=f"https://t.me/{channel}"
+            )
+        ]
+        for channel in not_joined_channels
     ]
-    text = "<b>ʙʀᴏ/sɪs\n\nʏᴏᴜ ɴᴇᴇᴅ ᴛᴏ ᴊᴏɪɴ ᴍʏ ᴜᴘᴅᴀᴛᴇs ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ɢʀᴏᴜᴘ ᴛᴏ ᴜsᴇ ᴍᴇ\n\nᴋɪɴᴅʟʏ ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴄʜᴀɴɴᴇʟ.</b>"
-    try:
-        user = await client.get_chat_member(Config.FORCE_SUB, message.from_user.id)    
-        if user.status == enums.ChatMemberStatus.BANNED:                                   
-            return await client.send_message(message.from_user.id, text="Sorry You Are Banned To Use Me")  
-    except UserNotParticipant:                       
-        return await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
-    return await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+    buttons.append(
+        [
+            InlineKeyboardButton(
+                text="• ᴊᴏɪɴᴇᴅ •", callback_data="check_subscription"
+            )
+        ]
+    )
+
+    text = "**sᴏʀʀʏ, ʏᴏᴜ'ʀᴇ ɴᴏᴛ ᴊᴏɪɴᴇᴅ ᴛᴏ ᴀʟʟ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs . ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴛʜᴇ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟs ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ**"
+    await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+
+
+@Client.on_callback_query(filters.regex("check_subscription"))
+async def check_subscription(client, callback_query: CallbackQuery):
+    user_id = callback_query.from_user.id
+    not_joined_channels = []
+
+    for channel in FORCE_SUB_CHANNELS:
+        try:
+            user = await client.get_chat_member(channel, user_id)
+            if user.status in {"kicked", "left"}:
+                not_joined_channels.append(channel)
+        except UserNotParticipant:
+            not_joined_channels.append(channel)
+
+    if not not_joined_channels:
+        await callback_query.message.edit_text(
+            "**ʏᴏᴜ ʜᴀᴠᴇ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs. ᴛʜᴀɴᴋ ʏᴏᴜ! 😊 /start ɴᴏᴡ**"
+        )
+    else:
+        buttons = [
+            [
+                InlineKeyboardButton(
+                    text=f"• ᴜᴘᴅᴀᴛᴇs {channel.capitalize()} •",
+                    url=f"https://t.me/{channel}",
+                )
+            ]
+            for channel in not_joined_channels
+        ]
+        buttons.append(
+            [
+                InlineKeyboardButton(
+                    text="• ᴊᴏɪɴᴇᴅ •", callback_data="check_subscription"
+                )
+            ]
+        )
+
+        text = "**ʏᴏᴜ ʜᴀᴠᴇ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs. ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴛʜᴇ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟs ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ**"
+        await callback_query.message.edit_text(
+            text=text, reply_markup=InlineKeyboardMarkup(buttons)
+        )

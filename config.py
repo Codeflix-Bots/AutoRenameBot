@@ -17,7 +17,7 @@ class Config(object):
     BOT_UPTIME  = time.time()
     START_PIC   = os.environ.get("START_PIC", "https://graph.org/file/29a3acbbab9de5f45a5fe.jpg")
     ADMIN       = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMIN', '6497757690').split()]
-    FORCE_SUB_CHANNELS = os.environ.get('FORCE_SUB_CHANNELS', 'codeflix_bots,codeflixsupport').split(',')
+    FORCE_SUB_CHANNELS = os.environ.get('FORCE_SUB_CHANNELS', 'codeflix_bots,codeflixsupport,anime_cruise_netflix').split(',')
     LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "-1001868871195"))
     
     # wes response configuration     
@@ -131,32 +131,11 @@ Pʀɪᴄɪɴɢ:
 ➲ /Help: ɢᴇᴛ ǫᴜɪᴄᴋ ᴀꜱꜱɪꜱᴛᴀɴᴄᴇ.</b>"""
 
     SEND_METADATA = """
-    ᴍᴀɴᴀɢɪɴɢ ᴍᴇᴛᴀᴅᴀᴛᴀ ғᴏʀ ʏᴏᴜʀ ᴠɪᴅᴇᴏꜱ ᴀɴᴅ ғɪʟᴇꜱ
-    
-    ᴠᴀʀɪᴏᴜꜱ ᴍᴇᴛᴀᴅᴀᴛᴀ:
-    
-    - ᴛɪᴛʟᴇ: Descriptive title of the media.
-    - ᴀᴜᴛʜᴏʀ: The creator or owner of the media.
-    - ᴀʀᴛɪꜱᴛ: The artist associated with the media.
-    - ᴀᴜᴅɪᴏ: Title or description of audio content.
-    - ꜱᴜʙᴛɪᴛʟᴇ: Title of subtitle content.
-    - ᴠɪᴅᴇᴏ: Title or description of video content.
-    
-    ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴛᴜʀɴ ᴏɴ ᴏғғ ᴍᴇᴛᴀᴅᴀᴛᴀ:
-    ➜ /metadata: Turn on or off metadata.
-    
-    ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ꜱᴇᴛ ᴍᴇᴛᴀᴅᴀᴛᴀ:
-    
-    ➜ /settitle: Set a custom title of media.
-    ➜ /setauthor: Set the author.
-    ➜ /setartist: Set the artist.
-    ➜ /setaudio: Set audio title.
-    ➜ /setsubtitle: Set subtitle title.
-    ➜ /setvideo: Set video title.
-    
-    ᴇxᴀᴍᴘʟᴇ: /settitle Your Title Here
-    
-    ᴜꜱᴇ ᴛʜᴇꜱᴇ ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴇɴʀɪᴄʜ ʏᴏᴜʀ ᴍᴇᴅɪᴀ ᴡɪᴛʜ ᴀᴅᴅɪᴛɪᴏɴᴀʟ ᴍᴇᴅɪᴀ ɪɴꜰᴏʀᴍᴀᴛɪᴏɴ!
+ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴛᴜʀɴ ᴏɴ ᴏғғ ᴍᴇᴛᴀᴅᴀᴛᴀ:
+
+➜ /metadata: Turn on or off metadata.
+
+    sᴇɴᴅ ᴍᴇᴛᴀᴅᴀᴛᴀ ᴄᴏᴅᴇ
     """
 
 

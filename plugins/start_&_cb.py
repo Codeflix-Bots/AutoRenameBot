@@ -61,17 +61,18 @@ async def cb_handler(client, query: CallbackQuery):
                 [InlineKeyboardButton("• sᴜᴘᴘᴏʀᴛ", url='https://t.me/CodeflixSupport'), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
             ])
         )
-elif data == "help":
-    await query.message.edit_text(
-        text=Txt.HELP_TXT.format(client.mention),
-        disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],
-            [InlineKeyboardButton('• ᴛʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'), InlineKeyboardButton('ᴄᴀᴘᴛɪᴏɴ •', callback_data='caption')],
-            [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='metadata'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
-            [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home')]
-        ])
-    )
+
+    elif data == "help":
+        await query.message.edit_text(
+            text=Txt.HELP_TXT.format(client.mention),
+            disable_web_page_preview=True,
+           reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],
+                [InlineKeyboardButton('• ᴛʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'), InlineKeyboardButton('ᴄᴀᴘᴛɪᴏɴ •', callback_data='caption')],
+                [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='metadata'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
+                [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home')]
+            ])
+        )
 
     elif data == "donate":
         await query.message.edit_text(

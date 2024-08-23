@@ -6,7 +6,6 @@ from config import Config
 
 FORCE_SUB_CHANNELS = Config.FORCE_SUB_CHANNELS
 
-
 async def not_subscribed(_, __, message):
     for channel in FORCE_SUB_CHANNELS:
         try:
@@ -16,7 +15,6 @@ async def not_subscribed(_, __, message):
         except UserNotParticipant:
             return True
     return False
-
 
 @Client.on_message(filters.private & filters.create(not_subscribed))
 async def forces_sub(client, message):
@@ -32,7 +30,7 @@ async def forces_sub(client, message):
     buttons = [
         [
             InlineKeyboardButton(
-                text=f"• ᴜᴘᴅᴀᴛᴇs {channel.capitalize()} •", url=f"https://t.me/{channel}"
+                text=f"• ᴊᴏɪɴ {channel.capitalize()} •", url=f"https://t.me/{channel}"
             )
         ]
         for channel in not_joined_channels
@@ -48,7 +46,6 @@ async def forces_sub(client, message):
     text = "**sᴏʀʀʏ, ʏᴏᴜ'ʀᴇ ɴᴏᴛ ᴊᴏɪɴᴇᴅ ᴛᴏ ᴀʟʟ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs . ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴛʜᴇ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟs ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ**"
     await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
 
-
 @Client.on_callback_query(filters.regex("check_subscription"))
 async def check_subscription(client, callback_query: CallbackQuery):
     user_id = callback_query.from_user.id
@@ -63,14 +60,14 @@ async def check_subscription(client, callback_query: CallbackQuery):
             not_joined_channels.append(channel)
 
     if not not_joined_channels:
-        await callback_query.message.edit_text(
-            "**ʏᴏᴜ ʜᴀᴠᴇ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs. ᴛʜᴀɴᴋ ʏᴏᴜ! 😊 /start ɴᴏᴡ**"
-        )
+        new_text = "**ʏᴏᴜ ʜᴀᴠᴇ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs. ᴛʜᴀɴᴋ ʏᴏᴜ! 😊 /start ɴᴏᴡ**"
+        if callback_query.message.text != new_text:
+            await callback_query.message.edit_text(new_text)
     else:
         buttons = [
             [
                 InlineKeyboardButton(
-                    text=f"• ᴜᴘᴅᴀᴛᴇs {channel.capitalize()} •",
+                    text=f"• ᴊᴏɪɴ {channel.capitalize()} •",
                     url=f"https://t.me/{channel}",
                 )
             ]
@@ -85,6 +82,7 @@ async def check_subscription(client, callback_query: CallbackQuery):
         )
 
         text = "**ʏᴏᴜ ʜᴀᴠᴇ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs. ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴛʜᴇ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟs ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ**"
-        await callback_query.message.edit_text(
-            text=text, reply_markup=InlineKeyboardMarkup(buttons)
-        )
+        if callback_query.message.text != text:
+            await callback_query.message.edit_text(
+                text=text, reply_markup=InlineKeyboardMarkup(buttons)
+            )

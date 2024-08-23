@@ -17,40 +17,37 @@ import asyncio
 renaming_operations = {}
 
 # Pattern 1: S01E02 or S01EP02
-pattern1 = re.compile(r"S(\d+)(?:E|EP)(\d+)")
+pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 # Pattern 2: S01 E02 or S01 EP02 or S01 - E01 or S01 - EP02
-pattern2 = re.compile(r"S(\d+)\s*(?:E|EP|-\s*EP)(\d+)")
+pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 # Pattern 3: Episode Number After "E" or "EP"
-pattern3 = re.compile(r"(?:[([<{]?\s*(?:E|EP)\s*(\d+)\s*[)\]>}]?)")
+pattern3 = re.compile(r'(?:[([<{]?\s*(?:E|EP)\s*(\d+)\s*[)\]>}]?)')
 # Pattern 3_2: episode number after - [hyphen]
-pattern3_2 = re.compile(r"(?:\s*-\s*(\d+)\s*)")
+pattern3_2 = re.compile(r'(?:\s*-\s*(\d+)\s*)')
 # Pattern 4: S2 09 ex.
-pattern4 = re.compile(r"S(\d+)[^\d]*(\d+)", re.IGNORECASE)
+pattern4 = re.compile(r'S(\d+)[^\d]*(\d+)', re.IGNORECASE)
 # Pattern X: Standalone Episode Number
-patternX = re.compile(r"(\d+)")
-# QUALITY PATTERNS
+patternX = re.compile(r'(\d+)')
+#QUALITY PATTERNS 
 # Pattern 5: 3-4 digits before 'p' as quality
-pattern5 = re.compile(r"\b(?:.*?(\d{3,4}[^\dp]*p).*?|.*?(\d{3,4}p))\b", re.IGNORECASE)
+pattern5 = re.compile(r'\b(?:.*?(\d{3,4}[^\dp]*p).*?|.*?(\d{3,4}p))\b', re.IGNORECASE)
 # Pattern 6: Find 4k in brackets or parentheses
-pattern6 = re.compile(r"[([<{]?\s*4k\s*[)\]>}]?", re.IGNORECASE)
+pattern6 = re.compile(r'[([<{]?\s*4k\s*[)\]>}]?', re.IGNORECASE)
 # Pattern 7: Find 2k in brackets or parentheses
-pattern7 = re.compile(r"[([<{]?\s*2k\s*[)\]>}]?", re.IGNORECASE)
+pattern7 = re.compile(r'[([<{]?\s*2k\s*[)\]>}]?', re.IGNORECASE)
 # Pattern 8: Find HdRip without spaces
-pattern8 = re.compile(r"[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b", re.IGNORECASE)
+pattern8 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
 # Pattern 9: Find 4kX264 in brackets or parentheses
-pattern9 = re.compile(r"[([<{]?\s*4kX264\s*[)\]>}]?", re.IGNORECASE)
+pattern9 = re.compile(r'[([<{]?\s*4kX264\s*[)\]>}]?', re.IGNORECASE)
 # Pattern 10: Find 4kx265 in brackets or parentheses
-pattern10 = re.compile(r"[([<{]?\s*4kx265\s*[)\]>}]?", re.IGNORECASE)
-
+pattern10 = re.compile(r'[([<{]?\s*4kx265\s*[)\]>}]?', re.IGNORECASE)
 
 def extract_quality(filename):
     # Try Quality Patterns
     match5 = re.search(pattern5, filename)
     if match5:
         print("Matched Pattern 5")
-        quality5 = match5.group(1) or match5.group(
-            2
-        )  # Extracted quality from both patterns
+        quality5 = match5.group(1) or match5.group(2)  # Extracted quality from both patterns
         print(f"Quality: {quality5}")
         return quality5
 
@@ -87,21 +84,21 @@ def extract_quality(filename):
         print("Matched Pattern 10")
         quality10 = "4kx265"
         print(f"Quality: {quality10}")
-        return quality10
+        return quality10    
 
     # Return "Unknown" if no pattern matches
     unknown_quality = "Unknown"
     print(f"Quality: {unknown_quality}")
     return unknown_quality
+    
 
-
-def extract_episode_number(filename):
+def extract_episode_number(filename):    
     # Try Pattern 1
     match = re.search(pattern1, filename)
     if match:
         print("Matched Pattern 1")
         return match.group(2)  # Extracted episode number
-
+    
     # Try Pattern 2
     match = re.search(pattern2, filename)
     if match:
@@ -119,7 +116,7 @@ def extract_episode_number(filename):
     if match:
         print("Matched Pattern 3_2")
         return match.group(1)  # Extracted episode number
-
+        
     # Try Pattern 4
     match = re.search(pattern4, filename)
     if match:
@@ -131,13 +128,12 @@ def extract_episode_number(filename):
     if match:
         print("Matched Pattern X")
         return match.group(1)  # Extracted episode number
-
+        
     # Return None if no pattern matches
     return None
 
-
 # Example Usage:
-filename = "Naruto Shippuden S01[episode] [quality][Dual Audio] @codeflix_bots.mkv"
+filename = "Naruto Shippuden S01 - EP07 - 1080p [Dual Audio] @Codeflix_Bots.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
@@ -177,15 +173,26 @@ async def auto_rename_files(client, message):
 
     episode_number = extract_episode_number(file_name)
     if episode_number:
-        format_template = format_template.replace(
-            "[episode]", "EP" + str(episode_number), 1
-        )
+        placeholders = ["episode", "Episode", "EPISODE", "{episode}"]
+        for placeholder in placeholders:
+            format_template = format_template.replace(placeholder, str(episode_number), 1)
 
-        quality = extract_quality(file_name)
-        format_template = format_template.replace("[quality]", quality)
+        # Add extracted qualities to the format template
+        quality_placeholders = ["quality", "Quality", "QUALITY", "{quality}"]
+        for quality_placeholder in quality_placeholders:
+            if quality_placeholder in format_template:
+                extracted_qualities = extract_quality(file_name)
+                if extracted_qualities == "Unknown":
+                    await message.reply_text("I Was Not Able To Extract The Quality Properly. Renaming As 'Unknown'...")
+                    # Mark the file as ignored
+                    del renaming_operations[file_id]
+                    return  # Exit the handler if quality extraction fails
+                
+                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))
 
     _, file_extension = os.path.splitext(file_name)
     renamed_file_name = f"{format_template}{file_extension}"
+    file_path = f"downloads/{new_file_name}"
     renamed_file_path = f"downloads/{renamed_file_name}"
     metadata_file_path = f"Metadata/{renamed_file_name}"
     os.makedirs(os.path.dirname(renamed_file_path), exist_ok=True)

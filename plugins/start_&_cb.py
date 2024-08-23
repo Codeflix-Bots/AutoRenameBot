@@ -66,11 +66,19 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.edit_text(
             text=Txt.HELP_TXT.format(client.mention),
             disable_web_page_preview=True,
-           reply_markup=InlineKeyboardMarkup([
+            reply_markup=InlineKeyboardMarkup([
                 [InlineKeyboardButton("• ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ғᴏʀᴍᴀᴛ •", callback_data='file_names')],
                 [InlineKeyboardButton('• ᴛʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'), InlineKeyboardButton('ᴄᴀᴘᴛɪᴏɴ •', callback_data='caption')],
                 [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='metadatax'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
                 [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home')]
+            ])
+        )
+
+    elif data == "metadatax":
+        await query.message.edit_text(  # Change edit_caption to edit_text
+            text=Txt.SEND_METADATA,  # Changed from caption to text
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
             ])
         )
 

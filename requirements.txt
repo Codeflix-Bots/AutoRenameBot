@@ -1,4 +1,4 @@
-pyrogram
+pyrogram==2.0.80
 TgCrypto
 motor
 dnspython
@@ -6,5 +6,6 @@ hachoir
 Pillow
 aiohttp
 pytz
-psutil
+humanize
 pyromod
+ffmpeg-python

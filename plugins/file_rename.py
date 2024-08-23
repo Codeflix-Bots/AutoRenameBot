@@ -213,9 +213,9 @@ async def auto_rename_files(client, message):
 
         # Add metadata if needed
         metadata_added = False
-        _bool_metadata = await AshutoshGoswami24.get_metadata(user_id)
+        _bool_metadata = await codeflixbots.get_metadata(user_id)
         if _bool_metadata:
-            metadata = await AshutoshGoswami24.get_metadata_code(user_id)
+            metadata = await codeflixbots.get_metadata_code(user_id)
             if metadata:
                 cmd = f'ffmpeg -i "{renamed_file_path}"  -map 0 -c:s copy -c:a copy -c:v copy -metadata title="{metadata}" -metadata author="{metadata}" -metadata:s:s title="{metadata}" -metadata:s:a title="{metadata}" -metadata:s:v title="{metadata}"  "{metadata_file_path}"'
                 try:

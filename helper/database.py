@@ -1,4 +1,4 @@
-import motor.motor_asyncio
+import motor.motor_asyncio, datetime, pytz
 from config import Config
 import logging  # Added for logging errors and important information
 from .utils import send_log
@@ -19,6 +19,7 @@ class Database:
     def new_user(self, id):
         return dict(
             _id=int(id),
+            join_date=datetime.date.today().isoformat(),
             file_id=None,
             caption=None,
             metadata=True,

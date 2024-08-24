@@ -26,7 +26,7 @@ async def start(client, message):
         ],
         [
             InlineKeyboardButton('• ᴀʙᴏᴜᴛ', callback_data='about'),
-            InlineKeyboardButton('ᴘʀᴇᴍɪᴜᴍ •', callback_data='premiumx')
+            InlineKeyboardButton('sᴏᴜʀᴄᴇ •', callback_data='source')
         ]
     ])
 

@@ -112,6 +112,13 @@ async def cb_handler(client, query: CallbackQuery):
                 [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
             ])
         )
+    elif data == "source":
+        await query.message.edit_caption(
+            caption=Txt.SOURCE_TXT,
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
+            ])
+        )
     elif data == "premiumx":
         await query.message.edit_caption(
             caption=Txt.PREMIUM_TXT,

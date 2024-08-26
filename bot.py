@@ -1,5 +1,5 @@
 import aiohttp, asyncio, warnings, pytz
-from datetime import datetime, timedelta  # Corrected import
+from datetime import datetime, timedelta
 from pytz import timezone
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
@@ -15,7 +15,7 @@ import time
 pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
 # Setting SUPPORT_CHAT directly here
-SUPPORT_CHAT = int(os.environ.get("SUPPORT_CHAT", "-1001953724858")) #-1001566837125
+SUPPORT_CHAT = int(os.environ.get("SUPPORT_CHAT", "-1001953724858"))
 
 class Bot(Client):
 
@@ -46,7 +46,7 @@ class Bot(Client):
 
         # Calculate uptime using timedelta
         uptime_seconds = int(time.time() - self.start_time)
-        uptime_string = str(timedelta(seconds=uptime_seconds))  # Corrected timedelta usage
+        uptime_string = str(timedelta(seconds=uptime_seconds))
 
         for chat_id in [Config.LOG_CHANNEL, SUPPORT_CHAT]:
             try:
@@ -72,8 +72,8 @@ class Bot(Client):
                 
                 # Check if the message was sent to SUPPORT_CHAT and schedule its deletion
                 if chat_id == SUPPORT_CHAT:
-                    await asyncio.sleep(120)  # Wait for 2 minutes (120 seconds)
-                    await self.delete_messages(chat_id=chat_id, message_ids=message.message_id)
+                    await asyncio.sleep(5)  # Wait for 2 minutes (120 seconds)
+                    await self.delete_messages(chat_id=chat_id, message_ids=[message.message_id])
 
             except Exception as e:
                 print(f"Failed to send or delete message in chat {chat_id}: {e}")

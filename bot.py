@@ -55,7 +55,7 @@ class Bot(Client):
                 time_str = curr.strftime('%I:%M:%S %p')
                 
                 # Send the message with the photo
-                message = await self.send_photo(
+                await self.send_photo(
                     chat_id=chat_id,
                     photo=Config.START_PIC,
                     caption=(
@@ -64,18 +64,12 @@ class Bot(Client):
                     ),
                     reply_markup=InlineKeyboardMarkup(
                         [[
-                            InlineKeyboardButton("ᴏᴡɴᴇʀ", url="https://t.me/sewxiy"),
                             InlineKeyboardButton("ᴜᴘᴅᴀᴛᴇs", url="https://t.me/codeflix_bots")
                         ]]
                     )
                 )
 
-                # Check if the message was sent to SUPPORT_CHAT and schedule its deletion
-                if chat_id == SUPPORT_CHAT:
-                    await asyncio.sleep(10)  # Wait for 2 minutes (120 seconds)
-                    await self.delete_messages(chat_id=chat_id, message_ids=[message.message_id])
-
             except Exception as e:
-                print(f"Failed to send or delete message in chat {chat_id}: {e}")
+                print(f"Failed to send message in chat {chat_id}: {e}")
 
 Bot().run()

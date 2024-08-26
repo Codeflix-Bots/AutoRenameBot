@@ -8,6 +8,7 @@ from hachoir.parser import createParser
 from helper.utils import progress_for_pyrogram, humanbytes, convert
 from helper.database import codeflixbots
 from config import Config
+from helper.utils import add_prefix_suffix
 import os
 import time
 import re
@@ -190,10 +191,15 @@ async def auto_rename_files(client, message):
                 
                 format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))
 
+    # Extracting necessary information
+    prefix = await codeflixbots.get_prefix(update.message.chat.id)
+    suffix = await codeflixbots.get_suffix(update.message.chat.id)
+
     _, file_extension = os.path.splitext(file_name)
     renamed_file_name = f"{format_template}{file_extension}"
     renamed_file_path = f"downloads/{renamed_file_name}"
     metadata_file_path = f"Metadata/{renamed_file_name}"
+    new_filename = add_prefix_suffix(renamed_file_name, prefix, suffix)"
     os.makedirs(os.path.dirname(renamed_file_path), exist_ok=True)
     os.makedirs(os.path.dirname(metadata_file_path), exist_ok=True)
 

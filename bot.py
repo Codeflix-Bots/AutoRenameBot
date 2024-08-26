@@ -69,19 +69,11 @@ class Bot(Client):
                         ]]
                     )
                 )
-                
-                # Debugging to check the message object
-                print(f"Message object: {message}")
 
                 # Check if the message was sent to SUPPORT_CHAT and schedule its deletion
                 if chat_id == SUPPORT_CHAT:
-                    # Assuming 'message_id' is the correct attribute; adjust if needed
-                    message_id = message.message_id if hasattr(message, 'message_id') else None
-                    if message_id:
-                        await asyncio.sleep(120)  # Wait for 2 minutes (120 seconds)
-                        await self.delete_messages(chat_id=chat_id, message_ids=[message_id])
-                    else:
-                        print("No message_id found in the message object")
+                    await asyncio.sleep(10)  # Wait for 2 minutes (120 seconds)
+                    await self.delete_messages(chat_id=chat_id, message_ids=[message.message_id])
 
             except Exception as e:
                 print(f"Failed to send or delete message in chat {chat_id}: {e}")

@@ -22,8 +22,6 @@ class Database:
             join_date=datetime.date.today().isoformat(),
             file_id=None,
             caption=None,
-            prefix=None,
-            suffix=None,
             metadata=True,
             metadata_code="Telegram : @Codeflix_Bots",
             format_template=None,
@@ -102,20 +100,6 @@ class Database:
         except Exception as e:
             logging.error(f"Error getting caption for user {id}: {e}")
             return None
-
-    async def set_prefix(self, id, prefix):
-        await self.col.update_one({'_id': int(id)}, {'$set': {'prefix': prefix}})
-
-    async def get_prefix(self, id):
-        user = await self.col.find_one({'_id': int(id)})
-        return user.get('prefix', None)
-
-    async def set_suffix(self, id, suffix):
-        await self.col.update_one({'_id': int(id)}, {'$set': {'suffix': suffix}})
-
-    async def get_suffix(self, id):
-        user = await self.col.find_one({'_id': int(id)})
-        return user.get('suffix', None)
 
     async def set_format_template(self, id, format_template):
         try:

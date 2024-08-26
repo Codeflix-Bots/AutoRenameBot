@@ -73,7 +73,7 @@ async def query_metadata(bot: Client, query: CallbackQuery):
                     text=Txt.SEND_METADATA,
                     chat_id=query.from_user.id,
                     filters=filters.text,
-                    timeout=30,
+                    timeout=60,
                     disable_web_page_preview=True,
                 )
             except ListenerTimeout:

@@ -1,5 +1,5 @@
-import aiohttp, asyncio, warnings, pytz, datetime
-from datetime import datetime
+import aiohttp, asyncio, warnings, pytz
+from datetime import datetime, timedelta  # Corrected import
 from pytz import timezone
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
@@ -44,9 +44,9 @@ class Bot(Client):
             await web.TCPSite(app, "0.0.0.0", 8080).start()     
         print(f"{me.first_name} Is Started.....✨️")
 
-        # Calculate uptime
+        # Calculate uptime using timedelta
         uptime_seconds = int(time.time() - self.start_time)
-        uptime_string = str(datetime.timedelta(seconds=uptime_seconds))
+        uptime_string = str(timedelta(seconds=uptime_seconds))  # Corrected timedelta usage
 
         for chat_id in [Config.LOG_CHANNEL, SUPPORT_CHAT]:
             try:
@@ -72,7 +72,7 @@ class Bot(Client):
                 
                 # Check if the message was sent to SUPPORT_CHAT and schedule its deletion
                 if chat_id == SUPPORT_CHAT:
-                    await asyncio.sleep(5)  # Wait for 2 minutes (120 seconds)
+                    await asyncio.sleep(120)  # Wait for 2 minutes (120 seconds)
                     await self.delete_messages(chat_id=chat_id, message_ids=message.message_id)
 
             except Exception as e:

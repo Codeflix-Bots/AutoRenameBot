@@ -134,11 +134,9 @@ Pʀɪᴄɪɴɢ:
     SEND_METADATA = """
 <b>--Metadata Settings:--</b>
 
-➜ <b>ᴄᴜʀʀᴇɴᴛ ᴍᴇᴛᴀᴅᴀᴛᴀ:</b> `{user_metadata}`
+➜ /metadata: Turn on or off metadata.
 
-<b>Description</b> : Metadata will change MKV video files including all audio, streams, and subtitle titles.
-
-<b>➲ Send metadata title. Timeout: 60 sec</b>"""
+<b>Description</b> : Metadata will change MKV video files including all audio, streams, and subtitle titles."""
 
 
     SOURCE_TXT = """

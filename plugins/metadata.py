@@ -102,3 +102,14 @@ async def query_metadata(bot: Client, query: CallbackQuery):
             await ms.edit("**Your Metadta Code Set Successfully ✅**")
         except Exception as e:
             print(e)
+
+# Metadata settings message template
+SEND_METADATA = """
+<b>--Metadata Settings:--</b>
+
+➜ <b>ᴄᴜʀʀᴇɴᴛ ᴍᴇᴛᴀᴅᴀᴛᴀ:</b> `{user_metadata}`
+
+<b>Description</b> : Metadata will change MKV video files including all audio, streams, and subtitle titles.
+
+<b>➲ Send metadata title. Timeout: 60 sec</b>
+"""

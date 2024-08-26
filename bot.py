@@ -8,6 +8,7 @@ from aiohttp import web
 from route import web_server
 import pyrogram.utils
 import pyromod
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup  # Add these imports
 
 pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
@@ -66,11 +67,11 @@ class Bot(Client):
                 date = curr.strftime('%d %B, %Y')
                 time = curr.strftime('%I:%M:%S %p')
                 await self.send_message(Config.LOG_CHANNEL, 
-                    f"**{me.mention} Is Restarted !!**\n\n"
-                    f"📅 Date : `{date}`\n"
-                    f"⏰ Time : `{time}`\n"
-                    f"🌐 Timezone : `Asia/Kolkata`\n\n"
-                    f"🉐 Version : `v{__version__} (Layer {layer})`</b>"
+                    f"**Anya Is Restarted !!**\n\n"
+                    f"›› Date : `{date}`\n"
+                    f"›› Time : `{time}`\n"
+                    f"›› Timezone : `Asia/Kolkata`\n\n"
+                    f"›› Version : `v{__version__} (Layer {layer})`</b>"
                 )
             except:
                 print("Please Make This Is Admin In Your Log Channel")

@@ -9,6 +9,16 @@ from helper.database import codeflixbots
 from pyromod.exceptions import ListenerTimeout
 from config import Txt, Config
 
+# Metadata settings message template
+SEND_METADATA = """
+<b>--Metadata Settings:--</b>
+
+➜ <b>ᴄᴜʀʀᴇɴᴛ ᴍᴇᴛᴀᴅᴀᴛᴀ:</b> `{user_metadata}`
+
+<b>Description</b> : Metadata will change MKV video files including all audio, streams, and subtitle titles.
+
+<b>➲ Send metadata title. Timeout: 60 sec</b>
+"""
 
 # AUTH_USERS = Config.AUTH_USERS
 
@@ -70,7 +80,7 @@ async def query_metadata(bot: Client, query: CallbackQuery):
         try:
             try:
                 metadata = await bot.ask(
-                    text=Txt.SEND_METADATA,
+                    text=SEND_METADATA,
                     chat_id=query.from_user.id,
                     filters=filters.text,
                     timeout=60,

@@ -1,6 +1,9 @@
 import re, os, time
 from os import environ, getenv
+from helper.database import codeflixbots
 id_pattern = re.compile(r'^.\d+$') 
+
+user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
 
 class Config(object):
     # pyro client config
@@ -127,16 +130,17 @@ Pʀɪᴄɪɴɢ:
 ʀᴇɴᴀᴍᴇ ʙᴏᴛ ɪꜱ ᴀ ʜᴀɴᴅʏ ᴛᴏᴏʟ ᴛʜᴀᴛ ʜᴇʟᴘꜱ ʏᴏᴜ ʀᴇɴᴀᴍᴇ ᴀɴᴅ ᴍᴀɴᴀɢᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ ᴇꜰꜰᴏʀᴛʟᴇꜱꜱʟʏ.
 
 ➲ /Autorename: ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ.
-➲ /Premium: ᴜᴘɢʀᴀᴅᴇ ꜰᴏʀ ᴜɴʟɪᴍɪᴛᴇᴅ ꜰᴇᴀᴛᴜʀᴇꜱ.
+➲ /Metadata: ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴛᴜʀɴ ᴏɴ ᴏғғ ᴍᴇᴛᴀᴅᴀᴛᴀ.
 ➲ /Help: ɢᴇᴛ ǫᴜɪᴄᴋ ᴀꜱꜱɪꜱᴛᴀɴᴄᴇ.</b>"""
 
     SEND_METADATA = """
-<b>ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴛᴜʀɴ ᴏɴ ᴏғғ ᴍᴇᴛᴀᴅᴀᴛᴀ:</b>
+<b>--Metadata Settings:--</b>
 
-➜ /metadata: Turn on or off metadata.
-➜ <b>ʏᴏᴜʀ ᴄᴜʀʀᴇɴᴛ ᴍᴇᴛᴀᴅᴀᴛᴀ:</b> `{user_metadata}`
+➜ <b>ᴄᴜʀʀᴇɴᴛ ᴍᴇᴛᴀᴅᴀᴛᴀ:</b> `{user_metadata}`
 
-<b>sᴇɴᴅ ᴍᴇᴛᴀᴅᴀᴛᴀ ᴄᴏᴅᴇ</b>"""
+<b>Description</b> : Metadata will change MKV video files including all audio, streams, and subtitle titles.
+
+<b>➲ Send metadata title. Timeout: 60 sec</b>"""
 
 
     SOURCE_TXT = """

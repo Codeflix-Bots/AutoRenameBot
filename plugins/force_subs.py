@@ -5,6 +5,7 @@ from pyrogram.errors import UserNotParticipant
 from config import Config
 
 FORCE_SUB_CHANNELS = Config.FORCE_SUB_CHANNELS
+IMAGE_URL = "https://graph.org/file/a27d85469761da836337c.jpg"
 
 async def not_subscribed(_, __, message):
     for channel in FORCE_SUB_CHANNELS:
@@ -44,7 +45,11 @@ async def forces_sub(client, message):
     )
 
     text = "**sᴏʀʀʏ, ʏᴏᴜ'ʀᴇ ɴᴏᴛ ᴊᴏɪɴᴇᴅ ᴛᴏ ᴀʟʟ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs . ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴛʜᴇ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟs ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ**"
-    await message.reply_text(text=text, reply_markup=InlineKeyboardMarkup(buttons))
+    await message.reply_photo(
+        photo=IMAGE_URL,
+        caption=text,
+        reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
 @Client.on_callback_query(filters.regex("check_subscription"))
 async def check_subscription(client, callback_query: CallbackQuery):
@@ -61,8 +66,13 @@ async def check_subscription(client, callback_query: CallbackQuery):
 
     if not not_joined_channels:
         new_text = "**ʏᴏᴜ ʜᴀᴠᴇ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs. ᴛʜᴀɴᴋ ʏᴏᴜ! 😊 /start ɴᴏᴡ**"
-        if callback_query.message.text != new_text:
-            await callback_query.message.edit_text(new_text)
+        if callback_query.message.caption != new_text:
+            await callback_query.message.edit_caption(
+                caption=new_text,
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("• ᴍʏ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs •", callback_data='help')]
+                ])
+            )
     else:
         buttons = [
             [
@@ -82,7 +92,8 @@ async def check_subscription(client, callback_query: CallbackQuery):
         )
 
         text = "**ʏᴏᴜ ʜᴀᴠᴇ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴛʜᴇ ʀᴇǫᴜɪʀᴇᴅ ᴄʜᴀɴɴᴇʟs. ᴘʟᴇᴀsᴇ ᴊᴏɪɴ ᴛʜᴇ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟs ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ**"
-        if callback_query.message.text != text:
-            await callback_query.message.edit_text(
-                text=text, reply_markup=InlineKeyboardMarkup(buttons)
+        if callback_query.message.caption != text:
+            await callback_query.message.edit_caption(
+                caption=text,
+                reply_markup=InlineKeyboardMarkup(buttons)
             )

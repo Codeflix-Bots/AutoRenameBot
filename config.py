@@ -1,17 +1,8 @@
 import re, os, time
-from pyrogram.types import Message
 from os import environ, getenv
 from helper.database import codeflixbots
 id_pattern = re.compile(r'^.\d+$') 
 
-
-# Function to get user metadata asynchronously
-async def get_user_metadata(user_id):
-    # Fetch user metadata from the database
-    user_metadata = await codeflixbots.get_metadata_code(user_id)
-    return user_metadata
-
-user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
 
 class Config(object):
     # pyro client config

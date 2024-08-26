@@ -192,8 +192,8 @@ async def auto_rename_files(client, message):
                 format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))
 
     # Extracting necessary information
-    prefix = await codeflixbots.get_prefix(update.message.chat.id)
-    suffix = await codeflixbots.get_suffix(update.message.chat.id)
+    prefix = await codeflixbots.get_prefix(message.message.chat.id)
+    suffix = await codeflixbots.get_suffix(message.message.chat.id)
 
     _, file_extension = os.path.splitext(file_name)
     renamed_file_name = f"{format_template}{file_extension}"

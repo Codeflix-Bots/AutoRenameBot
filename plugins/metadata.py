@@ -12,14 +12,14 @@ from config import Txt, Config
 
 # AUTH_USERS = Config.AUTH_USERS
 
-ON = [
-    [InlineKeyboardButton("ᴍᴇᴛᴀᴅᴀᴛᴀ ᴏɴ ✅", callback_data="metadata_1")],
-    [InlineKeyboardButton("sᴇᴛ ᴄᴜsᴛᴏᴍ ᴍᴇᴛᴀᴅᴀᴛᴀ", callback_data="cutom_metadata")],
-]
-OFF = [
-    [InlineKeyboardButton("ᴍᴇᴛᴀᴅᴀᴛᴀ ᴏғғ ❌", callback_data="metadata_0")],
-    [InlineKeyboardButton("sᴇᴛ ᴄᴜsᴛᴏᴍ ᴍᴇᴛᴀᴅᴀᴛᴀ", callback_data="cutom_metadata")],
-]
+ON = [[InlineKeyboardButton('ᴍᴇᴛᴀᴅᴀᴛᴀ ᴏɴ', callback_data='metadata_1'),
+       InlineKeyboardButton('✅', callback_data='metadata_1')
+       ],[
+       InlineKeyboardButton('Sᴇᴛ Cᴜsᴛᴏᴍ Mᴇᴛᴀᴅᴀᴛᴀ', callback_data='cutom_metadata')]]
+OFF = [[InlineKeyboardButton('ᴍᴇᴛᴀᴅᴀᴛᴀ ᴏғғ', callback_data='metadata_0'),
+        InlineKeyboardButton('❌', callback_data='metadata_0')
+       ],[
+       InlineKeyboardButton('Sᴇᴛ Cᴜsᴛᴏᴍ Mᴇᴛᴀᴅᴀᴛᴀ', callback_data='cutom_metadata')]]
 
 
 @Client.on_message(filters.private & filters.command("metadata"))

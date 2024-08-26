@@ -12,10 +12,25 @@ LOG_CHANNEL = "-1001868871195"  # Replace with your actual log channel ID
 
 # Start Command Handler
 @Client.on_message(filters.private & filters.command("start"))
-async def start(client, message):
+async def start(client, message: Message):
     user = message.from_user
     await codeflixbots.add_user(client, message)
 
+    # Initial interactive text and sticker sequence
+    m = await message.reply_text("ʜᴇʟʟᴏ ʙᴀʙʏ, ʜᴏᴡ ᴀʀᴇ ʏᴏᴜ \nᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ ʙᴀʙʏ . . .")
+    await asyncio.sleep(0.4)
+    await m.edit_text("🎊")
+    await asyncio.sleep(0.5)
+    await m.edit_text("⚡")
+    await asyncio.sleep(0.5)
+    await m.edit_text("ꜱᴛᴀʀᴛɪɴɢ ʙᴀʙʏ...")
+    await asyncio.sleep(0.4)
+    await m.delete()
+
+    # Send sticker after the text sequence
+    await message.reply_sticker("CAACAgUAAxkBAAECroBmQKMAAQ-Gw4nibWoj_pJou2vP1a4AAlQIAAIzDxlVkNBkTEb1Lc4eBA")
+
+    # Define buttons for the start message
     buttons = InlineKeyboardMarkup([
         [
             InlineKeyboardButton("• ᴍʏ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs •", callback_data='help')
@@ -30,10 +45,20 @@ async def start(client, message):
         ]
     ])
 
+    # Send start message with or without picture
     if Config.START_PIC:
-        await message.reply_photo(Config.START_PIC, caption=Txt.START_TXT.format(user.mention), reply_markup=buttons)
+        await message.reply_photo(
+            Config.START_PIC,
+            caption=Txt.START_TXT.format(user.mention),
+            reply_markup=buttons
+        )
     else:
-        await message.reply_text(text=Txt.START_TXT.format(user.mention), reply_markup=buttons, disable_web_page_preview=True)
+        await message.reply_text(
+            text=Txt.START_TXT.format(user.mention),
+            reply_markup=buttons,
+            disable_web_page_preview=True
+        )
+
 
 # Callback Query Handler
 @Client.on_callback_query()

@@ -1,9 +1,8 @@
 import re, os, time
+from pyrogram.types import Message
 from os import environ, getenv
 from helper.database import codeflixbots
 id_pattern = re.compile(r'^.\d+$') 
-
-user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
 
 class Config(object):
     # pyro client config
@@ -132,6 +131,8 @@ Pʀɪᴄɪɴɢ:
 ➲ /Autorename: ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ.
 ➲ /Metadata: ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴛᴜʀɴ ᴏɴ ᴏғғ ᴍᴇᴛᴀᴅᴀᴛᴀ.
 ➲ /Help: ɢᴇᴛ ǫᴜɪᴄᴋ ᴀꜱꜱɪꜱᴛᴀɴᴄᴇ.</b>"""
+
+user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
 
     SEND_METADATA = """
 <b>--Metadata Settings:--</b>

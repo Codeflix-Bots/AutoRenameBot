@@ -14,13 +14,13 @@ async def start(client, message: Message):
     await codeflixbots.add_user(client, message)
 
     # Initial interactive text and sticker sequence
-    m = await message.reply_text("ʜᴇʟʟᴏ ʙᴀʙʏ, ʜᴏᴡ ᴀʀᴇ ʏᴏᴜ \nᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ ʙᴀʙʏ . . .")
+    m = await message.reply_text("ᴏɴᴇᴇ-ᴄʜᴀɴ!, ʜᴏᴡ ᴀʀᴇ ʏᴏᴜ \nᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ. . .")
     await asyncio.sleep(0.4)
     await m.edit_text("🎊")
     await asyncio.sleep(0.5)
     await m.edit_text("⚡")
     await asyncio.sleep(0.5)
-    await m.edit_text("ꜱᴛᴀʀᴛɪɴɢ ʙᴀʙʏ...")
+    await m.edit_text("ꜱᴛᴀʀᴛɪɴɢ...")
     await asyncio.sleep(0.4)
     await m.delete()
 
@@ -138,7 +138,7 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.edit_caption(
             caption=Txt.SOURCE_TXT,
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="help")]
+                [InlineKeyboardButton("• ᴄʟᴏsᴇ", callback_data="close"), InlineKeyboardButton("ʙᴀᴄᴋ •", callback_data="home")]
             ])
         )
     elif data == "premiumx":

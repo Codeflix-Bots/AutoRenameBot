@@ -1,14 +1,8 @@
-import random
-import asyncio
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+import asyncio
 from helper.database import codeflixbots
-from config import *
-from config import Config
-
-# Define the LOG_CHANNEL variable
-LOG_CHANNEL = "-1001868871195"  # Replace with your actual log channel ID
+from config import Txt, Config
 
 # Start Command Handler
 @Client.on_message(filters.private & filters.command("start"))

@@ -199,7 +199,8 @@ async def auto_rename_files(client, message):
     renamed_file_name = f"{format_template}{file_extension}"
     renamed_file_path = f"downloads/{renamed_file_name}"
     metadata_file_path = f"Metadata/{renamed_file_name}"
-    new_filename = add_prefix_suffix(renamed_file_name, prefix, suffix)"
+    # Add prefix and suffix using a custom function
+    new_filename = add_prefix_suffix(renamed_file_name, prefix, suffix)
     os.makedirs(os.path.dirname(renamed_file_path), exist_ok=True)
     os.makedirs(os.path.dirname(metadata_file_path), exist_ok=True)
 

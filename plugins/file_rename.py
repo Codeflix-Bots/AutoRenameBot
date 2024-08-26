@@ -183,7 +183,7 @@ async def auto_rename_files(client, message):
             if quality_placeholder in format_template:
                 extracted_qualities = extract_quality(file_name)
                 if extracted_qualities == "Unknown":
-                    await message.reply_text("I Was Not Able To Extract The Quality Properly. Renaming As 'Unknown'...")
+                    await message.reply_text("**__I Was Not Able To Extract The Quality Properly. Renaming As 'Unknown'...__**")
                     # Mark the file as ignored
                     del renaming_operations[file_id]
                     return  # Exit the handler if quality extraction fails
@@ -210,7 +210,7 @@ async def auto_rename_files(client, message):
         del renaming_operations[file_id]
         return await download_msg.edit(f"**Download Error:** {e}")
 
-    await download_msg.edit("Renaming and Adding Metadata...")
+    await download_msg.edit("**__Renaming and Adding Metadata...__**")
 
     try:
         # Rename the file first

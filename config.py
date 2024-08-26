@@ -4,6 +4,8 @@ from os import environ, getenv
 from helper.database import codeflixbots
 id_pattern = re.compile(r'^.\d+$') 
 
+user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
+
 class Config(object):
     # pyro client config
     API_ID    = os.environ.get("API_ID", "23890262")
@@ -131,8 +133,6 @@ Pʀɪᴄɪɴɢ:
 ➲ /Autorename: ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ.
 ➲ /Metadata: ᴄᴏᴍᴍᴀɴᴅꜱ ᴛᴏ ᴛᴜʀɴ ᴏɴ ᴏғғ ᴍᴇᴛᴀᴅᴀᴛᴀ.
 ➲ /Help: ɢᴇᴛ ǫᴜɪᴄᴋ ᴀꜱꜱɪꜱᴛᴀɴᴄᴇ.</b>"""
-
-user_metadata = await codeflixbots.get_metadata_code(message.from_user.id)
 
     SEND_METADATA = """
 <b>--Metadata Settings:--</b>

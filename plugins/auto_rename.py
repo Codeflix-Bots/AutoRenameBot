@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from helper.database import codeflixbots
 
 @Client.on_message(filters.private & filters.command("autorename"))
@@ -27,10 +28,28 @@ async def auto_rename_command(client, message):
 
 @Client.on_message(filters.private & filters.command("setmedia"))
 async def set_media_command(client, message):
-    user_id = message.from_user.id    
-    media_type = message.text.split("/setmedia", 1)[1].strip().lower()
+    user_id = message.from_user.id
+    
+    # Define inline keyboard buttons
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("ᴅᴏᴄᴜᴍᴇɴᴛ", callback_data="setmedia_document")],
+        [InlineKeyboardButton("ᴠɪᴅᴇᴏ", callback_data="setmedia_video")]
+    ])
+    
+    # Send a message with inline buttons
+    await message.reply_text(
+        "**ᴘʟᴇᴀsᴇ sᴇʟᴇᴄᴛ ᴛʜᴇ ᴍᴇᴅɪᴀ ᴛʏᴘᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ sᴇᴛ:**",
+        reply_markup=keyboard
+    )
 
+@Client.on_callback_query(filters.regex("^setmedia_"))
+async def handle_media_selection(client, callback_query):
+    user_id = callback_query.from_user.id
+    media_type = callback_query.data.split("_", 1)[1]
+    
     # Save the preferred media type to the database
     await codeflixbots.set_media_preference(user_id, media_type)
-
-    await message.reply_text(f"**Media Preference Set To :** {media_type} ✅")
+    
+    # Acknowledge the callback and reply with confirmation
+    await callback_query.answer(f"**Media Preference Set To :** {media_type} ✅")
+    await callback_query.message.edit_text(f"**Media Preference Set To :** {media_type} ✅")

@@ -305,15 +305,16 @@ async def auto_rename_files(client, message):
                     progress_args=("Upload Started...", upload_msg, time.time()),
                 )
         except Exception as e:
-            os.remove(path)
+            os.remove(renamed_file_path)
             if ph_path:
                 os.remove(ph_path)
-            return await upload_msg.edit(f"**Upload Error:** {e}")
+            # Mark the file as ignored
+            return await upload_msg.edit(f"Error: {e}")
 
-        # await upload_msg.edit("Upload Complete ✅")
-
-    except Exception as e:
-        await download_msg.edit(f"**Error:** {e}")
+        await download_msg.delete() 
+        os.remove(file_path)
+        if ph_path:
+            os.remove(ph_path)
 
     finally:
         # Clean up

@@ -1,5 +1,43 @@
 from helper.database import codeflixbots as db
+import random
 from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, CallbackQuery
+from config import Config, Txt
+
+@Client.on_message(filters.command("metadata"))
+async def metadata(client, message):
+    user_id = message.from_user.id
+
+    current = await db.get_metadata(user_id)
+
+    title = await db.get_title(user_id)
+    author = await db.get_author(user_id)
+    artist = await db.get_artist(user_id)
+    video = await db.get_video(user_id)
+    audio = await db.get_audio(user_id)
+    subtitle = await db.get_subtitle(user_id)
+
+    text = f"""
+    **㊋ Yᴏᴜʀ Mᴇᴛᴀᴅᴀᴛᴀ ɪꜱ ᴄᴜʀʀᴇɴᴛʟʏ: {current}**
+
+**◈ Tɪᴛʟᴇ ▹** `{title if title else 'Nᴏᴛ ꜰᴏᴜɴᴅ'}`
+**◈ Aᴜᴛʜᴏʀ ▹** `{author if author else 'Nᴏᴛ ꜰᴏᴜɴᴅ'}`
+**◈ Aʀᴛɪꜱᴛ ▹** `{artist if artist else 'Nᴏᴛ ꜰᴏᴜɴᴅ'}`
+**◈ Aᴜᴅɪᴏ ▹** `{audio if audio else 'Nᴏᴛ ꜰᴏᴜɴᴅ'}`
+**◈ Sᴜʙᴛɪᴛʟᴇ ▹** `{subtitle if subtitle else 'Nᴏᴛ ꜰᴏᴜɴᴅ'}`
+**◈ Vɪᴅᴇᴏ ▹** `{video if video else 'Nᴏᴛ ꜰᴏᴜɴᴅ'}`
+    """
+
+    button = [[
+        InlineKeyboardButton(f"On{' ✅' if current == 'On' else ''}", callback_data='on_metadata'),
+        InlineKeyboardButton(f"Off{' ✅' if current == 'Off' else ''}", callback_data='off_metadata')
+    ],
+        [
+            InlineKeyboardButton("How to Set Metadata", callback_data="metainfo")
+        ]]
+    keyboard = InlineKeyboardMarkup(button)
+
+    await message.reply_text(text=text, reply_markup=keyboard, disable_web_page_preview=True)
 
 
 @Client.on_message(filters.private & filters.command('settitle'))

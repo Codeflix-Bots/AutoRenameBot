@@ -245,9 +245,13 @@ async def auto_rename_files(client, message):
             path = renamed_file_path
 
         upload_msg = await download_msg.edit("**__Uploading...__**")
-        ph_path = await download_thumbnail(client, message, media_type)
+
+        # Initialize ph_path to None
+        ph_path = None
 
         try:
+            ph_path = await download_thumbnail(client, message, media_type)
+
             if media_type == "document":
                 await client.send_document(message.chat.id, document=path, thumb=ph_path, caption=await get_caption(message), progress=progress_for_pyrogram, progress_args=("Upload Started...", upload_msg, time.time()))
                 await client.send_document(Config.DUMP_CHANNEL, document=path, thumb=ph_path, caption=await get_caption(message), progress=progress_for_pyrogram, progress_args=("Upload Started...", upload_msg, time.time()))
@@ -277,27 +281,3 @@ async def auto_rename_files(client, message):
         if ph_path and os.path.exists(ph_path):
             os.remove(ph_path)
         del renaming_operations[file_id]
-
-async def download_thumbnail(client, message, media_type):
-    if media_type == "document":
-        return None
-    elif media_type == "video":
-        file_id = message.video.file_id
-    elif media_type == "audio":
-        file_id = message.audio.file_id
-    else:
-        return None
-
-    thumb_msg = await client.get_messages(message.chat.id, limit=1, filter=filters.photo)
-    thumb_path = f"downloads/{file_id}.jpg"
-
-    try:
-        await thumb_msg.download(file_name=thumb_path)
-        return thumb_path
-    except Exception as e:
-        return None
-
-async def get_caption(message: Message):
-    title = f"{message.document.file_name if message.document else (message.video.file_name if message.video else message.audio.file_name)}"
-    title += f"\nUploaded by: {message.from_user.first_name}"
-    return title

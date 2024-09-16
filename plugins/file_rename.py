@@ -137,6 +137,8 @@ async def auto_rename_files(client, message):
 
     await download_msg.edit("**__Renaming and Adding Metadata...__**")
 
+    metadata_added = False  # Initialize metadata_added
+
     try:
         os.rename(path, renamed_file_path)
         path = renamed_file_path
@@ -170,9 +172,9 @@ async def auto_rename_files(client, message):
                 stdout, stderr = await process.communicate()
                 if process.returncode == 0:
                     path = temp_output_file
+                    metadata_added = True
                 else:
                     await download_msg.edit(f"**Metadata Error:**\n{stderr.decode()}")
-                    metadata_added = False
             except asyncio.TimeoutError:
                 await download_msg.edit("**ffmpeg command timed out.**")
                 return

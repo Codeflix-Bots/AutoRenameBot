@@ -56,33 +56,42 @@ def extract_episode_number(filename):
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
-    firstname = message.from_user.first_name
     format_template = await codeflixbots.get_format_template(user_id)
     media_preference = await codeflixbots.get_media_preference(user_id)
 
-    if await check_anti_nsfw(message):
-        return
+    # Initialize filename variable
+    filename = None
 
-    file_info = {}
-    filename = None  # Initialize filename variable
-
+    # Determine file type and set filename
     if message.document:
         filename = message.document.file_name
-        file_info['id'] = message.document.file_id
-        file_info['name'] = filename
-        file_info['type'] = media_preference or "document"
+        file_info = {
+            'id': message.document.file_id,
+            'name': filename,
+            'type': media_preference or "document"
+        }
     elif message.video:
         filename = f"{message.video.file_name}.mp4"
-        file_info['id'] = message.video.file_id
-        file_info['name'] = filename
-        file_info['type'] = media_preference or "video"
+        file_info = {
+            'id': message.video.file_id,
+            'name': filename,
+            'type': media_preference or "video"
+        }
     elif message.audio:
         filename = f"{message.audio.file_name}.mp3"
-        file_info['id'] = message.audio.file_id
-        file_info['name'] = filename
-        file_info['type'] = media_preference or "audio"
+        file_info = {
+            'id': message.audio.file_id,
+            'name': filename,
+            'type': media_preference or "audio"
+        }
     else:
         return await message.reply_text("Unsupported File Type")
+
+    if filename is None:
+        return await message.reply_text("Filename is not available.")
+
+    if await check_anti_nsfw(filename, message):
+        return
 
     if file_info['id'] in renaming_operations:
         elapsed_time = (datetime.now() - renaming_operations[file_info['id']]).seconds
@@ -90,9 +99,6 @@ async def auto_rename_files(client, message):
             return
 
     renaming_operations[file_info['id']] = datetime.now()
-
-    if await check_anti_nsfw(filename, message):
-        return
 
     episode_number = extract_episode_number(filename)
     if episode_number:

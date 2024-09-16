@@ -310,58 +310,85 @@ async def auto_rename_files(client, message):
             img = img.resize((320, 320))
             img.save(ph_path, "JPEG")
 
-        try:
-            if media_type == "document":
-                await client.send_document(
-                    message.chat.id,
-                    Config.DUMP_CHANNEL,
-                    document=path,
-                    thumb=ph_path,
-                    caption=caption,
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started...", upload_msg, time.time()),
-                )
-            elif media_type == "video":
-                await client.send_video(
-                    message.chat.id,
-                    Config.DUMP_CHANNEL,
-                    video=path,
-                    caption=caption,
-                    thumb=ph_path,
-                    duration=0,
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started...", upload_msg, time.time()),
-                )
-            elif media_type == "audio":
-                await client.send_audio(
-                    message.chat.id,
-                    Config.DUMP_CHANNEL,
-                    audio=path,
-                    caption=caption,
-                    thumb=ph_path,
-                    duration=0,
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started...", upload_msg, time.time()),
-                )
-        except Exception as e:
-            os.remove(renamed_file_path)
-            if ph_path:
-                os.remove(ph_path)
-            # Mark the file as ignored
-            return await upload_msg.edit(f"Error: {e}")
+try:
+    # Upload to the user's chat
+    if media_type == "document":
+        await client.send_document(
+            message.chat.id,
+            document=path,
+            thumb=ph_path,
+            caption=caption,
+            progress=progress_for_pyrogram,
+            progress_args=("Upload Started...", upload_msg, time.time()),
+        )
+        # Upload to DUMP_CHANNEL
+        await client.send_document(
+            Config.DUMP_CHANNEL,
+            document=path,
+            thumb=ph_path,
+            caption=caption,
+            progress=progress_for_pyrogram,
+            progress_args=("Upload Started...", upload_msg, time.time()),
+        )
+    elif media_type == "video":
+        await client.send_video(
+            message.chat.id,
+            video=path,
+            caption=caption,
+            thumb=ph_path,
+            duration=0,
+            progress=progress_for_pyrogram,
+            progress_args=("Upload Started...", upload_msg, time.time()),
+        )
+        # Upload to DUMP_CHANNEL
+        await client.send_video(
+            Config.DUMP_CHANNEL,
+            video=path,
+            caption=caption,
+            thumb=ph_path,
+            duration=0,
+            progress=progress_for_pyrogram,
+            progress_args=("Upload Started...", upload_msg, time.time()),
+        )
+    elif media_type == "audio":
+        await client.send_audio(
+            message.chat.id,
+            audio=path,
+            caption=caption,
+            thumb=ph_path,
+            duration=0,
+            progress=progress_for_pyrogram,
+            progress_args=("Upload Started...", upload_msg, time.time()),
+        )
+        # Upload to DUMP_CHANNEL
+        await client.send_audio(
+            Config.DUMP_CHANNEL,
+            audio=path,
+            caption=caption,
+            thumb=ph_path,
+            duration=0,
+            progress=progress_for_pyrogram,
+            progress_args=("Upload Started...", upload_msg, time.time()),
+        )
+except Exception as e:
+    os.remove(renamed_file_path)
+    if ph_path:
+        os.remove(ph_path)
+    # Mark the file as ignored
+    return await upload_msg.edit(f"Error: {e}")
 
-        await download_msg.delete() 
-        os.remove(path)
-        if ph_path:
-            os.remove(ph_path)
+await download_msg.delete() 
+os.remove(path)
+if ph_path:
+    os.remove(ph_path)
 
-    finally:
-        # Clean up
-        if os.path.exists(renamed_file_path):
-            os.remove(renamed_file_path)
-        temp_output_file = renamed_file_path.replace(file_extension, f"_temp{file_extension}")
-        if os.path.exists(temp_output_file):
-            os.remove(temp_output_file)
-        if ph_path and os.path.exists(ph_path):
-            os.remove(ph_path)
-        del renaming_operations[file_id]
+finally:
+    # Clean up
+    if os.path.exists(renamed_file_path):
+        os.remove(renamed_file_path)
+    temp_output_file = renamed_file_path.replace(file_extension, f"_temp{file_extension}")
+    if os.path.exists(temp_output_file):
+        os.remove(temp_output_file)
+    if ph_path and os.path.exists(ph_path):
+        os.remove(ph_path)
+    del renaming_operations[file_id]

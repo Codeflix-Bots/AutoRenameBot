@@ -28,17 +28,18 @@ async def restart_bot(b, m):
         os.execl(sys.executable, sys.executable, *sys.argv)
 
 
-@Client.on_message(filters.private & filters.command(["tutorial"]))
-async def tutorial(bot,message):
-	user_id = message.from_user.id
-	format_template = await codeflixbots.get_format_template(user_id)
-	await message.reply_text(
-	    text =Txt.FILE_NAME_TXT.format(format_template=format_template),
-	    disable_web_page_preview=True,
-	    reply_markup=InlineKeyboardMarkup([
-        			[InlineKeyboardButton("🦋 Admin",url = "https://t.me/"), 
-        			InlineKeyboardButton("⚡ Tutorial",url = "https://t.me/") ]])
-	)
+@Client.on_message(filters.private & filters.command("tutorial"))
+async def tutorial(bot: Client, message: Message):
+    user_id = message.from_user.id
+    format_template = await codeflixbots.get_format_template(user_id)
+    await message.reply_text(
+        text=Txt.FILE_NAME_TXT.format(format_template=format_template),
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("• ᴏᴡɴᴇʀ", url="https://t.me/cosmic_freak"),
+             InlineKeyboardButton("• ᴛᴜᴛᴏʀɪᴀʟ", url="https://t.me/codeflix_bots")]
+        ])
+    )
 
 
 @Client.on_message(filters.command(["stats", "status"]) & filters.user(Config.ADMIN))

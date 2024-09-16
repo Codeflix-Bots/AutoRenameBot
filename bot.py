@@ -15,7 +15,7 @@ import time
 pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
 # Setting SUPPORT_CHAT directly here
-SUPPORT_CHAT = int(os.environ.get("SUPPORT_CHAT", "-1001566837125"))
+SUPPORT_CHAT = int(os.environ.get("SUPPORT_CHAT", "-1001953724858"))
 
 class Bot(Client):
 

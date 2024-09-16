@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
+from plugins.antinsfw import check_anti_nsfw
 from pyrogram.types import InputMediaDocument, Message
 from PIL import Image
 from datetime import datetime

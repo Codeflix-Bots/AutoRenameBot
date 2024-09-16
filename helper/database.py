@@ -133,69 +133,54 @@ class Database:
             logging.error(f"Error getting media preference for user {id}: {e}")
             return None
 
-    async def set_metadata(self, id, bool_meta):
-        try:
-            await self.col.update_one(
-                {"_id": int(id)}, {"$set": {"metadata": bool_meta}}
-            )
-        except Exception as e:
-            logging.error(f"Error setting metadata for user {id}: {e}")
+    async def get_metadata(self, user_id):
+        user = await self.col.find_one({'_id': int(user_id)})
+        return user.get('metadata', "Off")
 
-    async def get_metadata(self, id):
-        try:
-            user = await self.col.find_one({"_id": int(id)})
-            return user.get("metadata", None) if user else None
-        except Exception as e:
-            logging.error(f"Error getting metadata for user {id}: {e}")
-            return None
+    async def set_metadata(self, user_id, metadata):
+        await self.col.update_one({'_id': int(user_id)}, {'$set': {'metadata': metadata}})
 
-    async def set_metadata_code(self, id, metadata_code):
-        try:
-            await self.col.update_one(
-                {"_id": int(id)}, {"$set": {"metadata_code": metadata_code}}
-            )
-        except Exception as e:
-            logging.error(f"Error setting metadata code for user {id}: {e}")
+    async def get_title(self, user_id):
+        user = await self.col.find_one({'_id': int(user_id)})
+        return user.get('title', 'Encoded by @Anime_Edge')
 
-    async def get_metadata_code(self, id):
-        try:
-            user = await self.col.find_one({"_id": int(id)})
-            return user.get("metadata_code", None) if user else None
-        except Exception as e:
-            logging.error(f"Error getting metadata code for user {id}: {e}")
-            return None
+    async def set_title(self, user_id, title):
+        await self.col.update_one({'_id': int(user_id)}, {'$set': {'title': title}})
 
-    async def remove_ban(self, id):
-        ban_status = dict(
-            is_banned=False,
-            ban_duration=0,
-            banned_on=datetime.date.max.isoformat(),
-            ban_reason=''
-        )
-        await self.col.update_one({'_id': int(id)}, {'$set': {'ban_status': ban_status}})
+    async def get_author(self, user_id):
+        user = await self.col.find_one({'_id': int(user_id)})
+        return user.get('author', '@Anime_Edge')
 
-    async def ban_user(self, user_id, ban_duration, ban_reason):
-        ban_status = dict(
-            is_banned=True,
-            ban_duration=ban_duration,
-            banned_on=datetime.date.today().isoformat(),
-            ban_reason=ban_reason
-        )
-        await self.col.update_one({'_id': int(user_id)}, {'$set': {'ban_status': ban_status}})
+    async def set_author(self, user_id, author):
+        await self.col.update_one({'_id': int(user_id)}, {'$set': {'author': author}})
 
-    async def get_ban_status(self, id):
-        default = dict(
-            is_banned=False,
-            ban_duration=0,
-            banned_on=datetime.date.max.isoformat(),
-            ban_reason=''
-        )
-        user = await self.col.find_one({'_id': int(id)})
-        return user.get('ban_status', default)
+    async def get_artist(self, user_id):
+        user = await self.col.find_one({'_id': int(user_id)})
+        return user.get('artist', '@Anime_Edge')
 
-    async def get_all_banned_users(self):
-        banned_users = self.col.find({'ban_status.is_banned': True})
-        return banned_users
+    async def set_artist(self, user_id, artist):
+        await self.col.update_one({'_id': int(user_id)}, {'$set': {'artist': artist}})
+
+    async def get_audio(self, user_id):
+        user = await self.col.find_one({'_id': int(user_id)})
+        return user.get('audio', 'By @Anime_Edge')
+
+    async def set_audio(self, user_id, audio):
+        await self.col.update_one({'_id': int(user_id)}, {'$set': {'audio': audio}})
+
+    async def get_subtitle(self, user_id):
+        user = await self.col.find_one({'_id': int(user_id)})
+        return user.get('subtitle', "By @Anime_Edge")
+
+    async def set_subtitle(self, user_id, subtitle):
+        await self.col.update_one({'_id': int(user_id)}, {'$set': {'subtitle': subtitle}})
+
+    async def get_video(self, user_id):
+        user = await self.col.find_one({'_id': int(user_id)})
+        return user.get('video', 'Encoded By @Anime_Edge')
+
+    async def set_video(self, user_id, video):
+        await self.col.update_one({'_id': int(user_id)}, {'$set': {'video': video}})
 
 
 codeflixbots = Database(Config.DB_URL, Config.DB_NAME)

@@ -1,4 +1,4 @@
-from helper.database import db
+from helper.database import codeflixbots as db
 from pyrogram import Client, filters
 
 

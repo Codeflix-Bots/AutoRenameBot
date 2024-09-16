@@ -56,27 +56,30 @@ def extract_episode_number(filename):
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
+    firstname = message.from_user.first_name
     format_template = await codeflixbots.get_format_template(user_id)
     media_preference = await codeflixbots.get_media_preference(user_id)
 
-    if await check_anti_nsfw(filename, message):
+    if await check_anti_nsfw(message):
         return
 
-    if not format_template:
-        return await message.reply_text("Please Set An Auto Rename Format First Using /autorename")
-
     file_info = {}
+    filename = None  # Initialize filename variable
+
     if message.document:
+        filename = message.document.file_name
         file_info['id'] = message.document.file_id
-        file_info['name'] = message.document.file_name
+        file_info['name'] = filename
         file_info['type'] = media_preference or "document"
     elif message.video:
+        filename = f"{message.video.file_name}.mp4"
         file_info['id'] = message.video.file_id
-        file_info['name'] = f"{message.video.file_name}.mp4"
+        file_info['name'] = filename
         file_info['type'] = media_preference or "video"
     elif message.audio:
+        filename = f"{message.audio.file_name}.mp3"
         file_info['id'] = message.audio.file_id
-        file_info['name'] = f"{message.audio.file_name}.mp3"
+        file_info['name'] = filename
         file_info['type'] = media_preference or "audio"
     else:
         return await message.reply_text("Unsupported File Type")
@@ -88,7 +91,10 @@ async def auto_rename_files(client, message):
 
     renaming_operations[file_info['id']] = datetime.now()
 
-    episode_number = extract_episode_number(file_info['name'])
+    if await check_anti_nsfw(filename, message):
+        return
+
+    episode_number = extract_episode_number(filename)
     if episode_number:
         placeholders = ["episode", "Episode", "EPISODE", "{episode}"]
         for placeholder in placeholders:
@@ -97,7 +103,7 @@ async def auto_rename_files(client, message):
         quality_placeholders = ["quality", "Quality", "QUALITY", "{quality}"]
         for quality_placeholder in quality_placeholders:
             if quality_placeholder in format_template:
-                extracted_quality = extract_quality(file_info['name'])
+                extracted_quality = extract_quality(filename)
                 if extracted_quality == "Unknown":
                     await message.reply_text("**__I Was Not Able To Extract The Quality Properly. Renaming As 'Unknown'...__**")
                     del renaming_operations[file_info['id']]
@@ -105,7 +111,7 @@ async def auto_rename_files(client, message):
 
                 format_template = format_template.replace(quality_placeholder, extracted_quality)
 
-    _, file_extension = os.path.splitext(file_info['name'])
+    _, file_extension = os.path.splitext(filename)
     renamed_file_name = f"{format_template}{file_extension}"
     renamed_file_path = f"downloads/{renamed_file_name}"
     os.makedirs(os.path.dirname(renamed_file_path), exist_ok=True)

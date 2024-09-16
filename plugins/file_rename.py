@@ -143,6 +143,8 @@ async def auto_rename_files(client, message):
     user_id = message.from_user.id
     format_template = await codeflixbots.get_format_template(user_id)
     media_preference = await codeflixbots.get_media_preference(user_id)
+    if await check_anti_nsfw(filename, message):
+        return
 
     if not format_template:
         return await message.reply_text(

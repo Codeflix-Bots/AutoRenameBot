@@ -5,13 +5,13 @@ id_pattern = re.compile(r'^.\d+$')
 
 class Config(object):
     # pyro client config
-    API_ID    = os.environ.get("API_ID", "23890262")
-    API_HASH  = os.environ.get("API_HASH", "da7e86cf57b0e6220b8a9e0aed228a68")
-    BOT_TOKEN = os.environ.get("BOT_TOKEN", "7365322253:AAHboQtxtnJsJ2Ov5E8xqBvbmz2fG82Atrw") 
+    API_ID    = os.environ.get("API_ID", "238962")
+    API_HASH  = os.environ.get("API_HASH", "da7e86cf57b0220b8a9e0aed228a68")
+    BOT_TOKEN = os.environ.get("BOT_TOKEN", "7365322253:boQtxtnJsJ2Ov5E8xqBvbmz2fG82Atrw") 
 
     # database config
     DB_NAME = os.environ.get("DB_NAME","codeflix")     
-    DB_URL  = os.environ.get("DB_URL","mongodb+srv://publicdb:publicdb@cluster0.aisg0rh.mongodb.net/?retryWrites=true&w=majority")
+    DB_URL  = os.environ.get("DB_URL","mongodb+srv://public:public@cluster0.aisg0rh.mongodb.net/?retryWrites=true&w=majority")
     PORT = os.environ.get("PORT", "25")
  
     # other configs

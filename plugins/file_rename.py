@@ -2,6 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument, Message
 from PIL import Image
+from plugins.antinsfw import check_anti_nsfw
 from datetime import datetime
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
@@ -163,6 +164,10 @@ async def auto_rename_files(client, message):
         media_type = media_preference or "audio"
     else:
         return await message.reply_text("Unsupported File Type")
+
+    # Anti-NSFW check
+    if await check_anti_nsfw(file_name, message):
+        return await message.reply_text("NSFW content detected. File upload rejected.")
 
     if file_id in renaming_operations:
         elapsed_time = (datetime.now() - renaming_operations[file_id]).seconds

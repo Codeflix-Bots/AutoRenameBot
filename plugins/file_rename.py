@@ -1,3 +1,5 @@
+import shutil
+
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument, Message
@@ -221,6 +223,7 @@ async def auto_rename_files(client, message):
         os.rename(path, renamed_file_path)
         path = renamed_file_path
 
+        ffmpeg_cmd = shutil.which('ffmpeg')
         # Prepare metadata command
         metadata_command = [
             'ffmpeg',

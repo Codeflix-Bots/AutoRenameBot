@@ -1,5 +1,3 @@
-This repo has not been completed yet
-
 ━━━━━━━━━━━━━━━━━━━━
 
 <h2 align="center">

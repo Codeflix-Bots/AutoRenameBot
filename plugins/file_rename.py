@@ -223,10 +223,10 @@ async def auto_rename_files(client, message):
         os.rename(path, renamed_file_path)
         path = renamed_file_path
 
-        ffmpeg_cmd = shutil.which('ffmpeg')
         # Prepare metadata command
+        ffmpeg_cmd = shutil.which('ffmpeg')
         metadata_command = [
-            'ffmpeg',
+            ffmpeg_cmd,
             '-i', path,
             '-metadata', f'title={await codeflixbots.get_title(user_id)}',
             '-metadata', f'artist={await codeflixbots.get_artist(user_id)}',

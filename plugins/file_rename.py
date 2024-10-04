@@ -165,7 +165,9 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
     
-    
+        # Check if the file is NSFW
+    if await check_anti_nsfw(client, message):
+        return await message.reply_text("NSFW content is not allowed.")
 
 # Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:

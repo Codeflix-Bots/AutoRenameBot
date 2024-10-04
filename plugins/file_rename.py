@@ -252,7 +252,7 @@ async def auto_rename_files(client, message):
             return
 
         # Use the new metadata file path for the upload
-        path = renamed_file_path
+        path = metadata_file_path
 
         # Upload the file
         upload_msg = await download_msg.edit("**__Uploading...__**")

@@ -271,7 +271,6 @@ async def auto_rename_files(client, message):
             else f"**{renamed_file_name}**"
         )
 
-        # Handle thumbnail processing
         if c_thumb:
             ph_path = await client.download_media(c_thumb)
         elif media_type == "video" and message.video.thumbs:
@@ -283,37 +282,53 @@ async def auto_rename_files(client, message):
             img.save(ph_path, "JPEG")
 
         try:
-            # Send the media based on its type
-            send_media_func = {
-                "document": client.send_document,
-                "video": client.send_video,
-                "audio": client.send_audio,
-            }[media_type]
-
-            await send_media_func(
-                message.chat.id,
-                document=path if media_type == "document" else None,
-                video=path if media_type == "video" else None,
-                audio=path if media_type == "audio" else None,
-                thumb=ph_path,
-                caption=caption,
-                progress=progress_for_pyrogram,
-                progress_args=("Upload Started...", upload_msg, time.time()),
-            )
-
-        except FloodWait as e:
-            await upload_msg.edit(f"**FloodWait Error:** {str(e)}")
-            return
-        finally:
-            if os.path.exists(path):
-                os.remove(path)
-            if ph_path and os.path.exists(ph_path):
+            if media_type == "document":
+                await client.send_document(
+                    message.chat.id,
+                    document=path,
+                    thumb=ph_path,
+                    caption=caption,
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started...", upload_msg, time.time()),
+                )
+            elif media_type == "video":
+                await client.send_video(
+                    message.chat.id,
+                    video=path,
+                    caption=caption,
+                    thumb=ph_path,
+                    duration=0,
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started...", upload_msg, time.time()),
+                )
+            elif media_type == "audio":
+                await client.send_audio(
+                    message.chat.id,
+                    audio=path,
+                    caption=caption,
+                    thumb=ph_path,
+                    duration=0,
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started...", upload_msg, time.time()),
+                )
+        except Exception as e:
+            os.remove(renamed_file_path)
+            if ph_path:
                 os.remove(ph_path)
+            # Mark the file as ignored
+            return await upload_msg.edit(f"Error: {e}")
 
-        await download_msg.delete()
-        await upload_msg.edit("**__Upload Successful!__**")
+        await download_msg.delete() 
+        os.remove(file_path)
+        if ph_path:
+            os.remove(ph_path)
 
-    except Exception as e:
-        await download_msg.edit(f"**Error:** {e}")
     finally:
-        del renaming_operations[file_info['id']]
+        # Clean up
+        if os.path.exists(renamed_file_path):
+            os.remove(renamed_file_path)
+        if os.path.exists(metadata_file_path):
+            os.remove(metadata_file_path)
+        if ph_path and os.path.exists(ph_path):
+            os.remove(ph_path)
+        del renaming_operations[file_id]

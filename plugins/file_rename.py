@@ -1,4 +1,6 @@
 import shutil
+from plugins.antinsfw import check_anti_nsfw
+
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from PIL import Image

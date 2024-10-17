@@ -1,5 +1,4 @@
 from pyrogram import Client, filters
-from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from helper.database import codeflixbots
 
@@ -7,49 +6,51 @@ from helper.database import codeflixbots
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
 
-    # Extract the format from the command
-    command_parts = message.text.split("/autorename", 1)
+    # Extract and validate the format from the command
+    command_parts = message.text.split(maxsplit=1)
     if len(command_parts) < 2 or not command_parts[1].strip():
-        await message.reply_text("**ᴘʟᴇᴀꜱᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ɴᴇᴡ ɴᴀᴍᴇ ᴀꜰᴛᴇʀ ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /autorename**\n\n"
-                                 "ʜᴇʀᴇ'ꜱ ʜᴏᴡ ᴛᴏ ᴜꜱᴇ ɪᴛ:\n"
-                                 "**ᴇxᴀᴍᴘʟᴇ ꜰᴏʀᴍᴀᴛ:** `ᴍʏᴄᴏᴏʟᴠɪᴅᴇᴏ [ᴇᴘɪꜱᴏᴅᴇ] [ǫᴜᴀʟɪᴛʏ]`")
+        await message.reply_text(
+            "**Please provide a new name after the command /autorename**\n\n"
+            "Here's how to use it:\n"
+            "**Example format:** `mycoolvideo [episode] [quality]`"
+        )
         return
 
     format_template = command_parts[1].strip()
 
-    # Save the format template to the database
+    # Save the format template in the database
     await codeflixbots.set_format_template(user_id, format_template)
 
-    # Send confirmation message with the template in mono font
-    await message.reply_text(f"**🌟 ꜰᴀɴᴛᴀꜱᴛɪᴄ! ʏᴏᴜ'ʀᴇ ʀᴇᴀᴅʏ ᴛᴏ ᴀᴜᴛᴏ-ʀᴇɴᴀᴍᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ.**\n\n"
-                             "📩 ꜱɪᴍᴘʟʏ ꜱᴇɴᴅ ᴛʜᴇ ꜰɪʟᴇ(ꜱ) ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʀᴇɴᴀᴍᴇ.\n\n"
-                             f"**ʏᴏᴜʀ ꜱᴀᴠᴇᴅ ᴛᴇᴍᴘʟᴀᴛᴇ:** `{format_template}`\n\n"
-                             "ʀᴇᴍᴇᴍʙᴇʀ, ᴍᴀʏʙᴇ ɪ'ʟʟ ʀᴇɴᴀᴍᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ ꜱʟᴏᴡ ʙᴜᴛ ɪ ꜱᴜʀᴇʟʏ ᴍᴀᴋᴇ ᴛʜᴇᴍ ᴘᴇʀꜰᴇᴄᴛ!✨")
+    # Send confirmation message with the template in monospaced font
+    await message.reply_text(
+        f"**🌟 Fantastic! You're ready to auto-rename your files.**\n\n"
+        "📩 Simply send the file(s) you want to rename.\n\n"
+        f"**Your saved template:** `{format_template}`\n\n"
+        "Remember, it might take some time, but I'll ensure your files are renamed perfectly!✨"
+    )
 
 @Client.on_message(filters.private & filters.command("setmedia"))
 async def set_media_command(client, message):
-    user_id = message.from_user.id
-    
-    # Define inline keyboard buttons
+    # Define inline keyboard buttons for media type selection
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("ᴅᴏᴄᴜᴍᴇɴᴛ", callback_data="setmedia_document")],
-        [InlineKeyboardButton("ᴠɪᴅᴇᴏ", callback_data="setmedia_video")]
+        [InlineKeyboardButton("📄 Document", callback_data="setmedia_document")],
+        [InlineKeyboardButton("🎥 Video", callback_data="setmedia_video")]
     ])
-    
-    # Send a message with inline buttons
+
+    # Send a message with the inline buttons
     await message.reply_text(
-        "**ᴘʟᴇᴀsᴇ sᴇʟᴇᴄᴛ ᴛʜᴇ ᴍᴇᴅɪᴀ ᴛʏᴘᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ sᴇᴛ:**",
+        "**Please select the media type you want to set:**",
         reply_markup=keyboard
     )
 
 @Client.on_callback_query(filters.regex("^setmedia_"))
 async def handle_media_selection(client, callback_query):
     user_id = callback_query.from_user.id
-    media_type = callback_query.data.split("_", 1)[1]
-    
-    # Save the preferred media type to the database
+    media_type = callback_query.data.split("_", 1)[1]  # Extract media type from callback data
+
+    # Save the preferred media type in the database
     await codeflixbots.set_media_preference(user_id, media_type)
-    
-    # Acknowledge the callback and reply with confirmation
-    await callback_query.answer(f"**Media Preference Set To :** {media_type} ✅")
-    await callback_query.message.edit_text(f"**Media Preference Set To :** {media_type} ✅")
+
+    # Acknowledge the callback and send confirmation
+    await callback_query.answer(f"Media preference set to: {media_type} ✅")
+    await callback_query.message.edit_text(f"**Media preference set to:** {media_type} ✅")

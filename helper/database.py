@@ -23,8 +23,15 @@ class Database:
             file_id=None,
             caption=None,
             metadata=True,
-            metadata_code="Telegram : @Codeflix_Bots",
+            metadata_code="Telegram : @CartoonAndAnime1Telugu",
             format_template=None,
+            token_expiry=0,
+            plan="Free",
+            used_renames=0,
+            used_extracts=0,
+            extra_extracts=0,
+            usage_date=datetime.date.today().isoformat(),
+            extract_language="off",
             ban_status=dict(
                 is_banned=False,
                 ban_duration=0,
@@ -181,6 +188,129 @@ class Database:
 
     async def set_video(self, user_id, video):
         await self.col.update_one({'_id': int(user_id)}, {'$set': {'video': video}})
+
+    async def get_prefix(self, id):
+        try:
+            user = await self.col.find_one({"_id": int(id)})
+            return user.get("prefix", "[@CartoonandAnime1Telugu] ") if user else "[@CartoonandAnime1Telugu] "
+        except Exception as e:
+            logging.error(f"Error getting prefix for user {id}: {e}")
+            return "[@CartoonandAnime1Telugu] "
+
+    async def set_prefix(self, id, prefix):
+        try:
+            await self.col.update_one({"_id": int(id)}, {"$set": {"prefix": prefix}})
+        except Exception as e:
+            logging.error(f"Error setting prefix for user {id}: {e}")
+
+    async def get_suffix(self, id):
+        try:
+            user = await self.col.find_one({"_id": int(id)})
+            return user.get("suffix", "") if user else ""
+        except Exception as e:
+            logging.error(f"Error getting suffix for user {id}: {e}")
+            return ""
+
+    async def set_suffix(self, id, suffix):
+        try:
+            await self.col.update_one({"_id": int(id)}, {"$set": {"suffix": suffix}})
+        except Exception as e:
+            logging.error(f"Error setting suffix for user {id}: {e}")
+
+    async def get_telugu_only(self, id):
+        try:
+            user = await self.col.find_one({"_id": int(id)})
+            return user.get("telugu_only", False) if user else False
+        except Exception as e:
+            logging.error(f"Error getting telugu_only for user {id}: {e}")
+            return False
+
+    async def set_telugu_only(self, id, telugu_only):
+        try:
+            await self.col.update_one({"_id": int(id)}, {"$set": {"telugu_only": telugu_only}})
+        except Exception as e:
+            logging.error(f"Error setting telugu_only for user {id}: {e}")
+
+    async def get_token_expiry(self, id):
+        try:
+            user = await self.col.find_one({"_id": int(id)})
+            return user.get("token_expiry", 0) if user else 0
+        except Exception as e:
+            logging.error(f"Error getting token expiry for user {id}: {e}")
+            return 0
+
+    async def set_token_expiry(self, id, expiry_time):
+        try:
+            await self.col.update_one({"_id": int(id)}, {"$set": {"token_expiry": expiry_time}})
+        except Exception as e:
+            logging.error(f"Error setting token expiry for user {id}: {e}")
+
+    async def set_user_plan(self, id, plan_name):
+        try:
+            await self.col.update_one(
+                {"_id": int(id)},
+                {"$set": {
+                    "plan": plan_name,
+                    "used_renames": 0,
+                    "used_extracts": 0,
+                    "extra_extracts": 0,
+                    "usage_date": datetime.date.today().isoformat()
+                }}
+            )
+        except Exception as e:
+            logging.error(f"Error setting plan for user {id}: {e}")
+
+    async def get_plan_details(self, id):
+        try:
+            user = await self.col.find_one({"_id": int(id)})
+            if not user:
+                return None
+
+            # Reset daily limits if the date has changed
+            today = datetime.date.today().isoformat()
+            if user.get("usage_date") != today:
+                await self.col.update_one(
+                    {"_id": int(id)},
+                    {"$set": {
+                        "usage_date": today,
+                        "used_renames": 0,
+                        "used_extracts": 0,
+                        "extra_extracts": 0
+                    }}
+                )
+                user["used_renames"] = 0
+                user["used_extracts"] = 0
+                user["extra_extracts"] = 0
+
+            return {
+                "plan": user.get("plan", "Free"),
+                "used_renames": user.get("used_renames", 0),
+                "used_extracts": user.get("used_extracts", 0),
+                "extra_extracts": user.get("extra_extracts", 0)
+            }
+        except Exception as e:
+            logging.error(f"Error getting plan details for user {id}: {e}")
+            return None
+
+    async def update_usage(self, id, field, increment=1):
+        try:
+            await self.col.update_one({"_id": int(id)}, {"$inc": {field: increment}})
+        except Exception as e:
+            logging.error(f"Error updating usage {field} for user {id}: {e}")
+
+    async def get_extract_language(self, id):
+        try:
+            user = await self.col.find_one({"_id": int(id)})
+            return user.get("extract_language", "off") if user else "off"
+        except Exception as e:
+            logging.error(f"Error getting extract_language for user {id}: {e}")
+            return "off"
+
+    async def set_extract_language(self, id, language):
+        try:
+            await self.col.update_one({"_id": int(id)}, {"$set": {"extract_language": language.lower()}})
+        except Exception as e:
+            logging.error(f"Error setting extract_language for user {id}: {e}")
 
 
 codeflixbots = Database(Config.DB_URL, Config.DB_NAME)

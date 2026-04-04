@@ -28,6 +28,85 @@ async def restart_bot(b, m):
         os.execl(sys.executable, sys.executable, *sys.argv)
 
 
+@Client.on_message(filters.private & filters.command("addpremium") & filters.user(ADMIN_USER_ID))
+async def add_premium_user(bot: Client, message: Message):
+    if len(message.command) < 3:
+        return await message.reply_text("⚠️ Usage: `/addpremium <user_id> <plan_name>`\nPlans: Bronze, Silver, Gold, Platinum, Diamond")
+
+    try:
+        target_id = int(message.command[1])
+        plan_name = message.command[2].capitalize()
+        valid_plans = ["Bronze", "Silver", "Gold", "Platinum", "Diamond"]
+
+        if plan_name not in valid_plans:
+            return await message.reply_text(f"❌ Invalid Plan!\nChoose from: {', '.join(valid_plans)}")
+
+        await codeflixbots.set_user_plan(target_id, plan_name)
+        await message.reply_text(f"✅ Successfully added User **{target_id}** to **{plan_name}** Premium plan.")
+
+        # Try to notify the user
+        try:
+            await bot.send_message(target_id, f"🎉 **Congratulations!**\nYour account has been upgraded to the **{plan_name}** Premium Plan by an Admin.\nCheck your limits using /myplan.")
+        except Exception:
+            pass
+
+    except ValueError:
+        await message.reply_text("❌ User ID must be an integer.")
+
+@Client.on_message(filters.private & filters.command("rmpremium") & filters.user(ADMIN_USER_ID))
+async def rm_premium_user(bot: Client, message: Message):
+    if len(message.command) < 2:
+        return await message.reply_text("⚠️ Usage: `/rmpremium <user_id>`")
+
+    try:
+        target_id = int(message.command[1])
+        await codeflixbots.set_user_plan(target_id, "Free")
+        await message.reply_text(f"✅ Successfully downgraded User **{target_id}** to **Free** plan.")
+
+        # Try to notify the user
+        try:
+            await bot.send_message(target_id, "⚠️ **Notice:** Your Premium plan has expired or been revoked by an Admin. You are now on the Free plan.")
+        except Exception:
+            pass
+
+    except ValueError:
+        await message.reply_text("❌ User ID must be an integer.")
+
+@Client.on_message(filters.private & filters.command("myplan"))
+async def my_plan_command(bot: Client, message: Message):
+    user_id = message.from_user.id
+    plan_details = await codeflixbots.get_plan_details(user_id)
+
+    if not plan_details:
+        return await message.reply_text("Failed to fetch plan details.")
+
+    plan_name = plan_details.get("plan", "Free").capitalize()
+    used_renames = plan_details.get("used_renames", 0)
+    used_extracts = plan_details.get("used_extracts", 0)
+
+    limits = {
+        "Free": {"rename": 20, "extract": 0},
+        "Bronze": {"rename": 40, "extract": 20},
+        "Silver": {"rename": 60, "extract": 30},
+        "Gold": {"rename": 100, "extract": 50},
+        "Platinum": {"rename": "Unlimited", "extract": 100},
+        "Diamond": {"rename": "Unlimited", "extract": "Unlimited"}
+    }
+
+    user_limits = limits.get(plan_name, limits["Free"])
+
+    text = (
+        f"📊 **Your Current Plan:** `{plan_name}`\n\n"
+        f"🔄 **Renames Today:** `{used_renames} / {user_limits['rename']}`\n"
+        f"🎧 **Extracts Today:** `{used_extracts} / {user_limits['extract']}`\n\n"
+    )
+
+    if plan_name == "Free":
+        text += "💡 **Tip:** Use `/extend` to get 5 free extra extracts today, or upgrade to a Premium plan!"
+
+    await message.reply_text(text)
+
+
 @Client.on_message(filters.private & filters.command("tutorial"))
 async def tutorial(bot: Client, message: Message):
     user_id = message.from_user.id

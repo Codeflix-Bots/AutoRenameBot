@@ -30,6 +30,118 @@ async def auto_rename_command(client, message):
     )
 
 
+@Client.on_message(filters.private & filters.command("set_prefix"))
+async def set_prefix_command(client, message):
+    user_id = message.from_user.id
+    command_parts = message.text.split(maxsplit=1)
+    if len(command_parts) < 2:
+        return await message.reply_text("Please provide a prefix. Example: `/set_prefix [MyPrefix]`")
+
+    prefix = command_parts[1]
+    if not prefix.endswith(" "):
+        prefix += " "
+
+    await codeflixbots.set_prefix(user_id, prefix)
+    await message.reply_text(f"**Prefix saved:** `{prefix}`")
+
+
+@Client.on_message(filters.private & filters.command("del_prefix"))
+async def del_prefix_command(client, message):
+    user_id = message.from_user.id
+    await codeflixbots.set_prefix(user_id, "")
+    await message.reply_text("**Prefix removed successfully!**")
+
+
+@Client.on_message(filters.private & filters.command("set_suffix"))
+async def set_suffix_command(client, message):
+    user_id = message.from_user.id
+    command_parts = message.text.split(maxsplit=1)
+    if len(command_parts) < 2:
+        return await message.reply_text("Please provide a suffix. Example: `/set_suffix @MyChannel`")
+
+    suffix = command_parts[1]
+    if not suffix.startswith(" "):
+        suffix = " " + suffix
+
+    await codeflixbots.set_suffix(user_id, suffix)
+    await message.reply_text(f"**Suffix saved:** `{suffix}`")
+
+
+@Client.on_message(filters.private & filters.command("del_suffix"))
+async def del_suffix_command(client, message):
+    user_id = message.from_user.id
+    await codeflixbots.set_suffix(user_id, "")
+    await message.reply_text("**Suffix removed successfully!**")
+
+
+@Client.on_message(filters.private & filters.command("extract"))
+async def extract_audio_command(client, message):
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Telugu", callback_data="ext_tel"), InlineKeyboardButton("Hindi", callback_data="ext_hin")],
+        [InlineKeyboardButton("English", callback_data="ext_eng"), InlineKeyboardButton("Tamil", callback_data="ext_tam")],
+        [InlineKeyboardButton("Malayalam", callback_data="ext_mal"), InlineKeyboardButton("Kannada", callback_data="ext_kan")],
+        [InlineKeyboardButton("Marathi", callback_data="ext_mar"), InlineKeyboardButton("Bengali", callback_data="ext_ben")],
+        [InlineKeyboardButton("❌ Turn OFF Extraction ❌", callback_data="ext_off")]
+    ])
+
+    await message.reply_text(
+        "🎧 **Select Audio Language to Extract** 🎧\n\n"
+        "Choose the language track you want to keep. All other audio tracks will be stripped.",
+        reply_markup=keyboard,
+        quote=True
+    )
+
+@Client.on_callback_query(filters.regex(r"^ext_"))
+async def handle_extract_selection(client, callback_query: CallbackQuery):
+    user_id = callback_query.from_user.id
+    lang_code = callback_query.data.split("_", 1)[1]
+
+    lang_map = {
+        "tel": "Telugu",
+        "hin": "Hindi",
+        "eng": "English",
+        "tam": "Tamil",
+        "mal": "Malayalam",
+        "kan": "Kannada",
+        "mar": "Marathi",
+        "ben": "Bengali",
+        "off": "OFF"
+    }
+
+    selected_lang = lang_map.get(lang_code, "off")
+    await codeflixbots.set_extract_language(user_id, lang_code)
+
+    if lang_code == "off":
+        await callback_query.answer("Extraction Disabled")
+        await callback_query.message.edit_text("❌ **Audio Extraction Disabled** ❌\nAll original audio tracks will be kept.")
+    else:
+        await callback_query.answer(f"{selected_lang} Extraction Enabled")
+        await callback_query.message.edit_text(f"✅ **Audio Extraction Enabled** ✅\nOnly **{selected_lang}** audio tracks will be kept.")
+
+
+@Client.on_message(filters.private & filters.command("extend"))
+async def extend_command(client, message):
+    user_id = message.from_user.id
+    plan_details = await codeflixbots.get_plan_details(user_id)
+
+    if not plan_details:
+        return await message.reply_text("Failed to fetch your plan details.")
+
+    if plan_details.get("plan", "Free").lower() != "free":
+        return await message.reply_text("🎉 **You are a Premium user!**\nYou don't need this extension.")
+
+    if plan_details.get("extra_extracts", 0) > 0:
+        return await message.reply_text("⏳ **You have already claimed your extension today!**\nTry again tomorrow.")
+
+    await codeflixbots.update_usage(user_id, "extra_extracts", 5)
+    await message.reply_text("🎁 **Bonus Claimed!**\nYou have been granted 5 extra audio extraction credits for today.")
+
+@Client.on_message(filters.private & filters.command("multi"))
+async def set_multi_command(client, message):
+    user_id = message.from_user.id
+    await codeflixbots.set_extract_language(user_id, "off")
+    await message.reply_text("❌ **Audio Extraction Disabled** ❌\nAll original audio tracks will be kept.")
+
 @Client.on_message(filters.private & filters.command("setmedia"))
 async def set_media_command(client, message):
     """Initiate media type selection with a sleek inline keyboard."""

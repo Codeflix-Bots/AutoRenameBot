@@ -7,11 +7,25 @@ from helper.database import codeflixbots
 from config import *
 from config import Config
 
+import time
+
 # Start Command Handler
 @Client.on_message(filters.private & filters.command("start"))
 async def start(client, message: Message):
     user = message.from_user
     await codeflixbots.add_user(client, message)
+
+    # Token Verification Logic
+    if len(message.command) > 1 and message.command[1].startswith("token_"):
+        token = message.command[1].split("_")[1]
+        expected_token = f"{user.id}-{int(time.time() / Config.TOKEN_TIMEOUT)}"
+        if token == expected_token:
+            await codeflixbots.set_token_expiry(user.id, time.time() + Config.TOKEN_TIMEOUT)
+            await message.reply_text("✅ **Token Verified Successfully!**\nYou now have full access for 24 hours.")
+            return
+        else:
+            await message.reply_text("❌ **Invalid or Expired Token!**\nPlease generate a new token using /token.")
+            return
 
     # Initial interactive text and sticker sequence
     m = await message.reply_text("ʜᴇʜᴇ..ɪ'ᴍ ᴀɴʏᴀ!\nᴡᴀɪᴛ ᴀ ᴍᴏᴍᴇɴᴛ. . .")
@@ -242,4 +256,43 @@ async def help_command(client, message):
             [InlineKeyboardButton('• ᴍᴇᴛᴀᴅᴀᴛᴀ', callback_data='meta'), InlineKeyboardButton('ᴅᴏɴᴀᴛᴇ •', callback_data='donate')],
             [InlineKeyboardButton('• ʜᴏᴍᴇ', callback_data='home')]
         ])
+    )
+
+import urllib.parse
+from helper.shortlink import get_shortlink
+
+@Client.on_message(filters.private & filters.command("token"))
+async def generate_token(client, message):
+    user_id = message.from_user.id
+    bot = await client.get_me()
+
+    # Check if already active
+    expiry = await codeflixbots.get_token_expiry(user_id)
+    if expiry > time.time():
+        time_left = expiry - time.time()
+        hours = int(time_left // 3600)
+        minutes = int((time_left % 3600) // 60)
+        await message.reply_text(f"✅ **You already have an active token!**\nTime remaining: {hours}h {minutes}m")
+        return
+
+    # Generate token link
+    expected_token = f"{user_id}-{int(time.time() / Config.TOKEN_TIMEOUT)}"
+    bot_username = bot.username
+    verify_link = f"https://t.me/{bot_username}?start=token_{expected_token}"
+
+    if Config.SHORTLINK_API and Config.SHORTLINK_URL:
+        # URL encode the deep link
+        encoded_verify_link = urllib.parse.quote(verify_link)
+        shortlink = await get_shortlink(Config.SHORTLINK_URL, Config.SHORTLINK_API, encoded_verify_link)
+    else:
+        shortlink = verify_link
+
+    buttons = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🔗 Generate Token", url=shortlink)]
+    ])
+
+    await message.reply_text(
+        "⏳ **Your token has expired or you don't have one.**\n\n"
+        "Click the button below to generate a new token and gain full access for the next 24 hours.",
+        reply_markup=buttons
     )
